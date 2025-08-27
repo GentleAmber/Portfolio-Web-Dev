@@ -1,0 +1,40 @@
+<%- include("partials/header.ejs") %>
+
+<div
+  class="modal modal-sheet position-static d-block   p-4 py-md-5"
+  tabindex="-1"
+  role="dialog"
+  id="modalSheet"
+>
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-bottom-0">
+        <h1 class="modal-title fs-5">Blog was posted successfully!</h1>
+      </div>
+      <hr class="my-1"/>
+      <div class="modal-body py-0">
+        <p>
+          Blog was posted successfully! Please wait for the website to redirect back to home page.
+          If the website doesn't redirect in 3 seconds please use the button below.
+        </p>
+      </div>
+      <div
+        class="modal-footer flex-column align-items-end w-30 gap-2 pb-3 border-top-0"
+      >
+        <button type="button" class="btn btn-outline-primary" id="returnToHome">
+          Back to home page
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $("#returnToHome").on("click", function() {
+    window.location.href = "/";
+  });
+  
+  setTimeout(() => {
+    window.location.href = "/"; // Runs on the browser instead of server now
+  }, 2000);
+</script>
