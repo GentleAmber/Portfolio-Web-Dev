@@ -1,0 +1,80 @@
+<%- include("partials/header.ejs") %>
+  <div class="container">
+    <form novalidate="" action="/search" method="post" id="searchForm">
+      <div class="row g-3">
+        <div class="col-sm-3">
+          <label for="artist" class="form-label">Artist</label>
+          <input type="text" class="form-control" id="artist" name="artist" placeholder="" required="" />
+          <label for="artist" class="form-label fs-6">e.g. Van Gogh</label>
+        </div>
+        <div class="col-sm-3">
+          <label for="objectMatter" class="form-label">Object Matter</label>
+          <input type="text" class="form-control" id="objectMatter" name="objectMatter" placeholder="" required="" />
+          <label for="objectMatter" class="form-label">e.g. sunflowers</label>
+        </div>
+
+        <div class="col-md-3">
+          <label for="department-select" class="form-label">Department</label>
+          <select class="form-select" required="" name="department" id="department-select">
+            <option value="">Choose...</option>
+            <% departments.forEach(function(department) { %>
+              <option value="<%= department.departmentId %>">
+                <%= department.displayName %>
+              </option>
+              <% }); %>
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <button class="btn btn-primary my-4" type="submit" id="submitButton">
+            Search
+          </button>
+        </div>
+
+        <p>There are <%= total%> results (max results: <%= max%>)</p>
+
+        <div class="row row-cols-2 row-cols-lg-4 g-3">
+          <% images.forEach(img=> { %>
+            <div class="col">
+              <div class="card shadow-sm h-100">
+                <img src="<%= img.primaryImage %>" alt="<%= img.title %>" height="225" width="100%" />
+                <div class="card-body d-flex flex-column">
+                  <p class="card-text"><b>
+                    <%= img.title %>
+                  </b></p>
+                  <p class="card-text">
+                    <%= img.artistDisplayName %>
+                  </p>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+        <!-- <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px">
+          
+        </div> -->
+
+        <div style="margin-top: 20px">
+          <% if (page> 1) { %>
+            <a
+              href="/result?artist=<%= query.artist %>&objectMatter=<%= query.objectMatter %>&department=<%= query.department %>&page=<%= page-1 %>">Previous</a>
+            <% } %>
+              <% for (let p=1; p <=totalPages; p++) { %>
+                <% if (p===page) { %>
+                  <strong>[<%= p %>]</strong>
+                  <% } else { %>
+                    <a
+                      href="/result?artist=<%= query.artist %>&objectMatter=<%= query.objectMatter %>&department=<%= query.department %>&page=<%= p %>">
+                      <%= p %>
+                    </a>
+                    <% } %>
+                      <% } %>
+                        <% if (page < totalPages) { %>
+                          <a
+                            href="/result?artist=<%= query.artist %>&objectMatter=<%= query.objectMatter %>&department=<%= query.department %>&page=<%= page+1 %>">Next</a>
+                          <% } %>
+        </div>
+        <%- include("partials/footer.ejs") %>
+      </div>
+    </form>
+  </div>

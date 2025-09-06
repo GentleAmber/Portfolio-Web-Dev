@@ -1,0 +1,17 @@
+<%- include("partials/header.ejs") %>
+
+<div class="px-4 pt-5 my-5 text-center border-bottom">
+  <h1 class="display-4 fw-bold text-body-emphasis mb-5">Art for Your Day</h1>
+    <div class="img-container">
+      <img
+        src="<%= object.primaryImage %>" 
+        alt="<%= object.title %>"
+        class="art-img"
+      />
+    
+      <p class="fs-5 fw-bold"><%= object.title%></p>
+      <p class="fs-5"><%= object.artistDisplayName %></p>
+ 
+</div>
+
+<%- include("partials/footer.ejs") %>

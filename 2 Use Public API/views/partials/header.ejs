@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="/styles/main.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+  <title>Home Of Art</title> 
+  <div> 
+    <header class="d-flex flex-wrap py-3 mb-4 border-bottom"> 
+      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"> 
+        <svg class="bi me-2" width="40" height="32" aria-hidden="true">
+          <use xlink:href="#bootstrap"></use>
+        </svg> 
+        <span class="fs-4 fw-bold">Home Of Art</span> 
+      </a> 
+      <ul class="nav nav-pills"> 
+        <li class="nav-item">
+          <a href="/" class="nav-link" aria-current="page">Home</a>
+        </li> 
+        <li class="nav-item">
+          <a href="/search" class="nav-link">Search</a>
+        </li> 
+      </ul>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    </header> 
+  </div>
+</head>
+
+<body>
+  <script>
+    $(document).ready(function () {
+      const currentPath = window.location.pathname; // e.g. "/about"
+
+      $(".nav-link").each(function () {
+        if ($(this).attr("href") === currentPath) {
+          $(this).addClass("active");
+        } else {
+          $(this).removeClass("active");
+        }
+      });
+    });
+  </script>
+  <main>

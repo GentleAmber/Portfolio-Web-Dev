@@ -1,0 +1,12 @@
+.img-container {
+  display: inline-block;      /* shrink-wrap to image size */
+}
+
+.art-img {
+  max-width: 500px;           /* limit width */
+  max-height: 600px;          /* limit height */
+  width: auto;                /* keep aspect ratio */
+  height: auto;               /* keep aspect ratio */
+  display: block;
+  margin: 0 auto;
+}
