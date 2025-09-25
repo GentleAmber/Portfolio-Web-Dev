@@ -1,0 +1,193 @@
+<%- include('header'); %>
+<div id="wrapper">
+  <div id="content">
+    <div class="user-profile-nav" id="db-usr-profile">
+      <div class="personalInfo">
+        <div class="pic">
+          <img height="48" width="48" alt="Sentry" src="https://img1.doubanio.com/icon/u153964408-30.jpg">
+        </div>
+        <div class="info">
+          <h1> Books I Have Read (<%= totalBooks %>) </h1>
+        </div>
+      </div>
+      <form action="/addBook" style="display: inline;">
+        <button class="btn highlight">Add a book</button>
+      </form> 
+    </div>
+    <div class="grid-16-8 clearfix">
+      <div class="article">
+        <div class="opt-bar clearfix">
+          <div class="sort">
+            <a href="/?sort=date&amp;page=1">
+              Order by time
+            </a>
+            <span class="gray-dot">·</span>
+
+            <a href="/?sort=rating&amp;page=1">
+              Order by rating
+            </a>
+            <span class="gray-dot">·</span>
+
+            <a href="/?sort=title&amp;page=1">
+              Order by title
+            </a>
+          </div>
+          <div class="mode">
+            <span class="subject-num">
+              <% const startIndex = Math.min(1 + (page - 1) * locals.maxBookPerPage, totalBooks); %>
+              <% const endIndex = Math.min(page * locals.maxBookPerPage, totalBooks); %>
+              <%= startIndex %>-<%= endIndex %>&nbsp;/&nbsp;<%= totalBooks %>
+            </span>
+          </div>
+        </div>
+        <% const allTags = new Map(); %>
+        <% if (totalBooks === 0) { %>
+          <p>There is no book yet.</p>
+        <% } else { %>
+          <ul class="interest-list">
+          <% locals.books.forEach(book => { %>
+            <li class="subject-item">
+              <div class="pic">
+                <% if (book.book_cover_src) { %>
+                <img class="" src=<%= book.book_cover_src %> width="90">
+                <% } else { %>
+                  <img class="" src="/images/defaultCover.jpg" width="90">
+                <% } %>
+              </div>
+              <div class="info">
+                <h2 class="">
+                  <%= book.title %>
+                </h2>
+                <div class="pub">
+                  <%= book.author? book.author : "Unknown" %>
+                </div>
+                <div class="short-note">
+                  <div>
+                    <span class="rating<%= book.rating %>-t"></span>
+
+                    <span class="date"><%= new Date(book.datetime).toLocaleDateString() %>
+                      Read</span>
+                    <span class="tags">Tag: 
+                      <% if (book.tags) { %>
+                        <% const bookTags = book.tags.split("#") %>
+                        <% bookTags.forEach(tag => { %>
+                          <%= tag %>
+                          <% if (allTags.get(tag.trim())) { %>
+                            <% allTags.set(tag.trim(), 1); %>
+                          <% } else { %>
+                            <% allTags.set(tag.trim(), allTags.get(tag.trim()) + 1); %>
+                          <% } %>
+                        <% }); %>
+                        
+                      <% } %>
+                    </span>
+                  </div>
+
+                  <p class="comment comment-item">
+                    <%= book.notes %>
+                  </p>
+
+
+
+                  <div class="opt-l">
+                    <a class="j a_collect_btn" rel="nofollow" name="pbtn-35426737" href="javascript:;">
+                      Edit
+                    </a>
+                    &nbsp;&nbsp;
+                    <a class="d_link" rel="35426737:P" href="javascript:;">
+                      Delete
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </li>
+          <% }); %>
+          </ul>
+        <% } %>
+
+        <div class="paginator">
+
+
+          <% if (page > 1) { %>
+            <a
+              href="/?sort=<%= sortType %>&amp;page=<%= page-1 %>">
+              <span class="prev">
+                &lt;Previous
+              </span>
+            </a>
+          <% } %>
+
+          <% const totalPages = Math.ceil(totalBooks / maxBookPerPage) === 0 ? 1 : Math.ceil(totalBooks / maxBookPerPage) %>
+          <% if (totalPages > pageNavLength) { %>
+            <% for (let p = 1; p <= pageNavLength; p++) { %>
+              <% if (p < Math.floor(pageNavLength * 2 / 3)) {%>
+                <a href="/?sort=<%= sortType %>&amp;page=<%= p %>" data-pid="<%= p %>">
+                  <%= p %>
+                </a>
+              <% } else if (p === Math.floor(pageNavLength * 2 / 3)) { %>
+                <span class="break">...</span>
+              <% } else { %>
+                <% p = totalPages + 1 - (pageNavLength - Math.floor(pageNavLength * 2 / 3)) %>
+                <a href="/?sort=<%= sortType %>&amp;page=<%= p %>" data-pid="<%= p %>">
+                  <%= p %>
+                </a>
+              <% } %>
+            <% } %>
+          <% } else { %>
+            <% for (let p = 1; p <= totalPages; p++) { %>
+              <a href="/?sort=<%= sortType %>&amp;page=<%= p %>" data-pid="<%= p %>">
+                <%= p %>
+              </a>
+            <% } %>
+          <% } %>
+
+          <!-- <span class="thispage">1</span> -->
+
+          <% if (page < totalPages) { %>
+            <span class="next">
+              <a href="?sort=<%= sortType %>&amp;page=<%= parseInt(page)+1 %>">Next</a>
+            </span>
+          <% } %>
+
+        </div>
+
+
+      </div>
+      <div class="aside">
+        <h2>
+          <span>All Tags</span>
+          &nbsp;·&nbsp;·&nbsp;·&nbsp;·&nbsp;·&nbsp;·
+        </h2>
+        <% if (tags.size === 0) { %>
+          <p>There is no tag yet.</p>
+        <% } else { %>
+          <ul class="tag-list mb10">
+            <% for (const [key, value] of tags) { %>
+            <li class=" clearfix">
+              <span><%= key %></span>
+              <span><%= value %></span>
+            </li>
+            <% } %>
+          </ul>
+        <% } %>
+        
+          
+
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script>
+          $('*[data-pid=<%= page%>]').addClass("thispage");
+          console.log(page + " is added class.")
+        </script>
+
+
+
+      </div>
+      <div class="extra">
+
+      </div>
+    </div>
+  </div>
+
+</div>
+<script src="/scripts/homeLoad.js"></script>
+<%- include('footer.ejs'); %>

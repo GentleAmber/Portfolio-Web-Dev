@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add a Book</title>
+  <link rel="stylesheet" href="addBook.css">
+  <link rel="stylesheet" href="douban.css">
+</head>
+<body>
+  <div class="form-wrapper">
+    <form action="/submitBook" method="post" class="book-form" id="theForm">
+      <label>
+        Book Title*
+        <input type="text" name="title" required id="bookTitle">
+      </label>
+
+      <label>
+        Author
+        <input type="text" name="author">
+      </label>
+
+      <label>
+        Book ID 
+        <div class="id-options">
+          <label><input type="radio" name="idtype" value="isbn"> ISBN</label>
+          <label><input type="radio" name="idtype" value="oclc"> OCLC</label>
+          <label><input type="radio" name="idtype" value="lccn"> LCCN</label>
+          <label><input type="radio" name="idtype" value="olid"> OLID</label>
+          <a href="#" id="clear-radio" style="display:none; margin-left:10px;">Clear</a>
+        </div>
+        <input type="text" style="display:none;" name="id" id="bookIdNum">
+        <p id="id-error" style="color:red; display:none;">An ID must be filled when a type is selected</p>
+      </label>
+
+      <label>
+        Rating
+        <div class="stars" id="rating">
+          <span data-value="1"></span>
+          <span data-value="2"></span>
+          <span data-value="3"></span>
+          <span data-value="4"></span>
+          <span data-value="5"></span>
+        </div>
+        <input type="hidden" name="rating" id="rating-value">
+      </label>
+
+      <label>
+        Tag (#)
+        <input type="text" id="tag-input" placeholder="#[tag1] #[tag2] ...">
+      </label>
+      <input type="hidden" name="tags" id="tags-hidden">
+      <p id="tag-error" style="color:red; display:none;">Tags must be in the format #[tag]</p>
+
+
+      <label>
+        Notes*
+        <textarea name="notes" placeholder="Share what you think with the world" required
+        maxlength="500" minlength="15"></textarea>
+      </label>
+
+      <button type="submit" class="btn highlight" id="submitButton">Submit</button>
+    </form>
+  </div>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const stars = document.querySelectorAll("#rating span");
+    const ratingValue = document.getElementById("rating-value");
+
+    let currentRating = 0;
+
+    stars.forEach((star) => {
+      star.addEventListener("mouseover", () => {
+        highlightStars(star.dataset.value);
+      });
+
+      star.addEventListener("click", () => {
+        currentRating = star.dataset.value;
+        ratingValue.value = currentRating; // save rating in hidden input
+      });
+
+      star.addEventListener("mouseout", () => {
+        highlightStars(currentRating); // reset to chosen rating
+      });
+    });
+
+    function highlightStars(value) {
+      stars.forEach((s) => {
+        // If s.data-value <= value, add "filled" to its clssList
+        s.classList.toggle("filled", s.dataset.value <= value);
+      });
+    }
+
+    const radios = document.querySelectorAll("input[name=idtype]");
+    const clearLink = document.getElementById("clear-radio");
+    let ifSelectBookIdType = false;
+    const bookIdNumInput = document.getElementById("bookIdNum");
+
+    // Show "Clear" when a radio is selected
+    radios.forEach(radio => {
+      radio.addEventListener("change", () => {
+        clearLink.style.display = "inline";
+        ifSelectBookIdType = true;
+        bookIdNumInput.style.display = "inline";
+      });
+    });
+
+    // Clear all radios when clicking "Clear"
+    clearLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      radios.forEach(r => r.checked = false);
+      clearLink.style.display = "none";
+      bookIdNumInput.style.display = "none";
+      ifSelectBookIdType = false;
+    });
+
+    const submitBotton = document.getElementById("submitButton");
+    const idErrorMessage = document.getElementById("id-error");
+    const theForm = document.getElementById("theForm");
+    const bookTitle = document.getElementById("bookTitle");
+
+    submitBotton.addEventListener("click", (e) => {
+      if (ifSelectBookIdType) {
+        // Check if the id is filled
+        if (!bookIdNumInput.value) {
+          e.preventDefault();
+          idErrorMessage.style.display="block";
+        } else{
+          idErrorMessage.style.display="none";
+        }
+        // } else {
+        //   e.preventDefault();
+        //   idErrorMessage.innerHTML = "Book id should be made of numbers";
+        //   idErrorMessage.style.display="block";
+        // }
+      }
+    })
+  });
+  </script>
+</body>
+</html>
