@@ -3,29 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <title>Add a Book</title>
-  <link rel="stylesheet" href="addBook.css">
-  <link rel="stylesheet" href="douban.css">
+  <link rel="stylesheet" href="/addBook.css">
+  <link rel="stylesheet" href="/douban.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
+  <% var ifEdit = false; %>
+  <% if (locals.bookReview) { %>
+    <% ifEdit = true; %>
+  <% } %>
+    
   <div class="form-wrapper">
     <form action="/submitBook" method="post" class="book-form" id="theForm">
       <label>
         Book Title*
-        <input type="text" name="title" required id="bookTitle">
+        <input type="text" name="title" required id="bookTitle"
+        value="<%= ifEdit? locals.bookReview.title : "" %>">
       </label>
 
       <label>
         Author
-        <input type="text" name="author">
+        <input type="text" name="author"
+        value="<%= ifEdit? locals.bookReview.author : "" %>">
       </label>
 
       <label>
         Book ID 
         <div class="id-options">
-          <label><input type="radio" name="idtype" value="isbn"> ISBN</label>
-          <label><input type="radio" name="idtype" value="oclc"> OCLC</label>
-          <label><input type="radio" name="idtype" value="lccn"> LCCN</label>
-          <label><input type="radio" name="idtype" value="olid"> OLID</label>
+          
+          <label><input type="radio" name="idtype" value="isbn" id="radio-isbn"> ISBN</label>
+          <label><input type="radio" name="idtype" value="oclc" id="radio-oclc"> OCLC</label>
+          <label><input type="radio" name="idtype" value="lccn" id="radio-lccn"> LCCN</label>
+          <label><input type="radio" name="idtype" value="olid" id="radio-olid"> OLID</label>
           <a href="#" id="clear-radio" style="display:none; margin-left:10px;">Clear</a>
         </div>
         <input type="text" style="display:none;" name="id" id="bookIdNum">
@@ -46,94 +55,113 @@
 
       <label>
         Tag (#)
-        <input type="text" id="tag-input" placeholder="#[tag1] #[tag2] ...">
+        <input type="text" id="tag-input" name="tags" placeholder="#[tag1] #[tag2] ..."
+        value="<%= ifEdit? locals.bookReview.tags : "" %>">
       </label>
-      <input type="hidden" name="tags" id="tags-hidden">
+      <!-- <input type="hidden" name="tags" id="tags-hidden"> -->
       <p id="tag-error" style="color:red; display:none;">Tags must be in the format #[tag]</p>
 
 
       <label>
         Notes*
         <textarea name="notes" placeholder="Share what you think with the world" required
-        maxlength="500" minlength="15"></textarea>
+        maxlength="500" minlength="15" id="notes-textarea"></textarea>
       </label>
 
       <button type="submit" class="btn highlight" id="submitButton">Submit</button>
     </form>
   </div>
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const stars = document.querySelectorAll("#rating span");
-    const ratingValue = document.getElementById("rating-value");
+    const ifEditBoolean = <%= ifEdit %>;
+    console.log("ifEditBoolean: " + ifEditBoolean);
+    // If this is the edit mode, then change the form's action.
+    if (ifEditBoolean) {
+      $("#theForm").attr("action","/editBook/" + <%= locals.bookId %>);
+      const idType = <%- JSON.stringify(locals.bookReview.book_id_type) %>;
+      console.log("idType: " + idType);
+      $("#rating-value").val(<%= locals.bookReview.rating %>);
+      $("#notes-textarea").val(<%- JSON.stringify(locals.bookReview.notes) %>);
+      
+      
+      if (idType != null && idType != "") {
+        $("#radio-" + idType).prop("checked", true);
+        $("#bookIdNum").show();
+
+        const idNum = <%- JSON.stringify(locals.bookReview.book_id_num) %>;
+        console.log("idNum: " + idNum);
+        $("#bookIdNum").val(idNum);
+      }
+    }
+
+  </script>
+  <script>
+  $(function() {
+    const stars = $("#rating span");
+    const ratingValue = $("#rating-value");
 
     let currentRating = 0;
+    // Used for edit mode when there may be ratingValue already.
+    highlightStars(ratingValue.val()? ratingValue.val() : currentRating);
 
-    stars.forEach((star) => {
-      star.addEventListener("mouseover", () => {
-        highlightStars(star.dataset.value);
-      });
+    stars.on("mouseover", function() {
+      highlightStars($(this).data("value"));
+    });
 
-      star.addEventListener("click", () => {
-        currentRating = star.dataset.value;
-        ratingValue.value = currentRating; // save rating in hidden input
-      });
+    stars.on("click", function() {
+      currentRating = $(this).data("value");
+      ratingValue.val(currentRating); // save rating in hidden input
+    });
 
-      star.addEventListener("mouseout", () => {
-        highlightStars(currentRating); // reset to chosen rating
-      });
+    stars.on("mouseout", function() {
+      highlightStars(currentRating); // reset to chosen rating
     });
 
     function highlightStars(value) {
-      stars.forEach((s) => {
-        // If s.data-value <= value, add "filled" to its clssList
-        s.classList.toggle("filled", s.dataset.value <= value);
+      stars.each(function() {
+        $(this).toggleClass("filled", $(this).data("value") <= value);
       });
     }
 
-    const radios = document.querySelectorAll("input[name=idtype]");
-    const clearLink = document.getElementById("clear-radio");
+    const radios = $("input[name=idtype]");
+    const clearLink = $("#clear-radio");
+    const bookIdNumInput = $("#bookIdNum");
     let ifSelectBookIdType = false;
-    const bookIdNumInput = document.getElementById("bookIdNum");
 
     // Show "Clear" when a radio is selected
-    radios.forEach(radio => {
-      radio.addEventListener("change", () => {
-        clearLink.style.display = "inline";
-        ifSelectBookIdType = true;
-        bookIdNumInput.style.display = "inline";
-      });
+    radios.on("change", function() {
+      clearLink.show();
+      ifSelectBookIdType = true;
+      bookIdNumInput.show();
     });
 
     // Clear all radios when clicking "Clear"
-    clearLink.addEventListener("click", (e) => {
+    clearLink.on("click", function(e) {
       e.preventDefault();
-      radios.forEach(r => r.checked = false);
-      clearLink.style.display = "none";
-      bookIdNumInput.style.display = "none";
+      radios.prop("checked", false);
+      clearLink.hide();
+      bookIdNumInput.hide();
       ifSelectBookIdType = false;
     });
 
-    const submitBotton = document.getElementById("submitButton");
-    const idErrorMessage = document.getElementById("id-error");
-    const theForm = document.getElementById("theForm");
-    const bookTitle = document.getElementById("bookTitle");
+    const submitButton = $("#submitButton");
+    const idErrorMessage = $("#id-error");
+    const bookTitle = $("#bookTitle");
 
-    submitBotton.addEventListener("click", (e) => {
+    submitButton.on("click", function(e) {
       if (ifSelectBookIdType) {
         // Check if the id is filled
-        if (!bookIdNumInput.value) {
+        if (!bookIdNumInput.val()) {
           e.preventDefault();
-          idErrorMessage.style.display="block";
-        } else{
-          idErrorMessage.style.display="none";
+          idErrorMessage.show();
+        } else {
+          idErrorMessage.hide();
         }
-        // } else {
+        // else {
         //   e.preventDefault();
-        //   idErrorMessage.innerHTML = "Book id should be made of numbers";
-        //   idErrorMessage.style.display="block";
+        //   idErrorMessage.text("Book id should be made of numbers").show();
         // }
       }
-    })
+    });
   });
   </script>
 </body>
