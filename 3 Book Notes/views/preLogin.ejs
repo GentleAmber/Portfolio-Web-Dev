@@ -1,0 +1,69 @@
+<%- include('header'); %>
+<link rel="stylesheet" href="base.css">
+<div class="account-main account-body login-wrap login-start account-anonymous "
+style="margin-top: 10vh">
+  <h1>Welcome</h1>
+
+  <div class="account-tabcon-start">
+    <div class="account-form">
+    <div class="account-form-tips" style="height: 15%"></div>
+  <div class="account-form-error" ><span class="hide"></span></div>
+  
+  <div class="account-form-raw">
+    <label class="account-form-label">Username: </label>
+    <div class="account-form-field account-form-codes">
+      <input id="username" type="text" name="username" maxlength="15" class="account-form-input" placeholder="Username" tabindex="1" autocomplete="off">
+    </div>
+  </div>
+
+  
+  <div class="account-form-raw">
+    <label class="account-form-label">Password: </label>
+    <div class="account-form-field account-form-codes">
+      <input id="password" type="text" name="password" maxlength="18" class="account-form-input" placeholder="Password" tabindex="2" autocomplete="off">
+      <div class="tips hide" style="color: red;" id="errorMessage">Encountered a problem <a href="javascript:window.location.reload()" data-action="captch_error">Refresh</a></div>
+    </div>
+  </div>
+
+  
+  <div class="account-form-field-submit ">
+    <a class="btn btn-phone " id="loginButton">Log in</a>
+  </div>
+  <a style="float: right; color: rgb(33, 33, 175);"
+  href="/signUp">Sign up</a>
+
+</div> 
+</div>
+</div>
+
+<script>
+  $("#loginButton").on("click", async function() {
+    $("#errorMessage").addClass("hide");
+
+    const username = $("#username").val();
+    const password = $("#password").val();
+
+    const res = await fetch("/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ username: username, password: password}),
+    });
+
+    if (!res.ok) {
+
+      const { errType } = await res.json();
+
+      if (errType === "VAGUE") {
+        $("#errorMessage").html("Username or password is wrong.");
+        $("#errorMessage").removeClass("hide");
+      } else if (errType === "UNKNOWN") {
+        $("#errorMessage").removeClass("hide");
+      }
+    } else {
+      alert("Logged in! You don't have to log in again in the next 7 days.");
+      const { userID } = await res.json();
+      window.location.href = "/user/" + userID;
+    }
+  })
+</script>
+<%- include('footer'); %>

@@ -1,62 +1,184 @@
 import express from "express";
 import bodyParser from "body-parser";
 import axios from "axios";
-import pg from "pg";
+import Pool from 'pg-pool';
+import cookieParser from "cookie-parser";
+import crypto from "crypto";
+import bcrypt from "bcrypt";
 
-const db = new pg.Client({
+const pool = new Pool({
+  database: 'book_notes',
   user: "postgres",
   host: "localhost",
-  database: "book_notes",
-  password: "wkx",
+  password: 'wkx',
   port: 5432,
-});
-await db.connect();
-await databaseInit();
+  max: 20, 
+  idleTimeoutMillis: 1500, 
+  connectionTimeoutMillis: 1000, 
+})
 
-async function databaseInit() {
-  const createTable1 = 
-  "CREATE TABLE IF NOT EXISTS books_basic_info(" +
-  "id SERIAL PRIMARY KEY," + 
-  "title TEXT NOT NULL," +
-  "rating SMALLSERIAL NOT NULL," + 
-  "notes TEXT NOT NULL," +
-  "datetime timestamptz NOT NULL);";
 
-  const createTable2 = 
-  "CREATE TABLE IF NOT EXISTS books_full_info(" +
-  "id SERIAL PRIMARY KEY references books_basic_info(id)," + 
-  "author TEXT," + 
-  "tags TEXT," + 
-  "book_id_type CHAR(4)," + 
-  "book_id_num TEXT," +
-  "book_cover_src TEXT," +
-  "UNIQUE(book_id_type, book_id_num));";
-  try {
-    await db.query(createTable1);
-    console.log("Table [books_basic_info] is ready.");
-    await db.query(createTable2);
-    console.log("Table [books_full_info] is ready.");
-  } catch(err) {
-    console.error(err);
-  }
-  
-}
+// Table creation
+// `CREATE TABLE IF NOT EXISTS books_basic_info(
+// id SERIAL PRIMARY KEY,
+// title TEXT NOT NULL,
+// rating SMALLSERIAL NOT NULL,
+// notes TEXT NOT NULL,
+// datetime timestamptz NOT NULL,
+// user_id INTEGER references users(id)) NOT NULL;`;
+
+// `CREATE TABLE IF NOT EXISTS books_full_info(
+// id SERIAL PRIMARY KEY references books_basic_info(id),
+// author TEXT,
+// tags TEXT,
+// book_id_type CHAR(4),
+// book_id_num TEXT,
+// book_cover_src TEXT,
+// UNIQUE(book_id_type, book_id_num));`;
+
+// `CREATE TABLE users(
+// id SERIAL PRIMARY KEY,
+// username VARCHAR(15) UNIQUE NOT NULL,
+// password TEXT NOT NULL
+// );`
+
+// CREATE TABLE invitations(
+// 	id SERIAL PRIMARY KEY,
+// 	invitation_code VARCHAR(10) UNIQUE NOT NULL 
+// );
 
 const app = express();
 const port = 3000;
 const maxBookPerPage = 10;
 const pageNavLength = 12; // e.g.: <pre 1 2 3 4 5 6 7 ... 12 13 14 15 next>
-const API_URL = "https://collectionapi.metmuseum.org";
+const currentYear = new Date().getFullYear();
+const saltRounds = 10;
+
+const sessions = {}; // To remember verified users on their browsers
+const rememberedToken = {};
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.use(cookieParser());
+app.use((req, res, next) => {
+  // To check if the user has logged in / has been given a session
+  const { sessionID } = req.cookies || "";
+  if (sessionID && sessions[sessionID]) {
+    req.user = sessions[sessionID];
+    console.log(`UserID ${sessions[sessionID]} | sessionID: ${sessionID}`);
+  }
+
+  next();
+});
 app.locals.maxBookPerPage = maxBookPerPage;
 
 app.listen(port, () => {
   console.log(`Listens on port ${port}...`);
 })
 
-app.get('/', async (req, res) => {
+// Finished.
+app.get('/', (req, res) => {
+  if (!req.user) {
+    res.render('preLogin.ejs', {currentYear: currentYear});
+  } else {
+    res.redirect('/user/' + req.user);
+  }
+  
+})
+
+// Finished.
+app.post('/login', async (req, res) => {
+  console.log(req.body);
+  // Authentication of the user. If successful, 
+  try {
+    const queryResult = await pool.query("SELECT * FROM users WHERE username = $1",
+      [req.body.username]);
+
+    if (queryResult.rowCount !== 1) {
+      // Username doesn't exist
+      res.status(401).json({errType : "VAGUE"}); 
+    } else {
+      bcrypt.compare(req.body.password, queryResult.rows[0].password, function(err, result) {
+      // result == true when password is right
+        if (result) {
+          const sessionID = generateToken();
+          sessions[sessionID] = queryResult.rows[0].id;
+          res.status(200).cookie("sessionID", sessionID, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 }).json({ userID: queryResult.rows[0].id });
+
+        } else {
+          // Password is wrong.
+          res.status(401).json({errType : "VAGUE"}); 
+        }
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({errType : "UNKNOWN"});
+  }
+})
+
+// Finished.
+app.get('/signUp', (req, res) => {
+  res.render('signUp.ejs', {currentYear: currentYear});
+})
+
+// Finished.
+app.post('/signUp', async (req, res) => {
+
+  // Check if username exists.
+  const resultUser = await pool.query(`SELECT exists (SELECT 1 FROM users WHERE username = $1 LIMIT 1);`,
+    [req.body.username]
+  );
+
+  const usernameExists = resultUser.rows[0].exists;
+
+  // Check if invitation code exists.
+  const resultInvi = await pool.query(`SELECT exists (SELECT 1 FROM invitations WHERE invitation_code = $1 LIMIT 1);`,
+    [req.body.invitationCode]
+  );
+
+  const invitationCodeExists = resultInvi.rows[0].exists;
+
+  if (!usernameExists && invitationCodeExists) {
+    // Register the info into database with password ciphered.
+    try {
+      bcrypt.hash(req.body.password, saltRounds, async function(err, hash) {
+        // Store hash in your password DB.
+        await pool.query(`INSERT INTO users VALUES (default, $1, $2)`,
+          [req.body.username, hash]
+        );
+        res.status(200).send();
+      })
+    } catch(err) {
+      console.error(err);
+      res.status(500).json({errType : "UNKNOWN"});
+    }
+  } else {
+    // If it fails because of wrong invitation code, return the error msg
+    if (!invitationCodeExists) {
+      res.status(400).json({errType : "CODE"});
+    }
+    // If it fails because of existing username, return the error msg
+    if (usernameExists) {
+      res.status(400).json({errType : "USERNAME"});
+    }
+    // Otherwise, return unknown
+    res.status(400).json({errType : "UNKNOWN"});
+  }
+})
+
+app.get('/user/:userid', async (req, res) => {
+  /*
+  Must do authentication check
+  All the queries need changing
+  */
+ console.log(`req.user: ${req.user}, userid: ${req.params.userid}`);
+  if (!req.user || req.user != req.params.userid) {
+    res.status(401).render('unauthentication.ejs', {currentYear: currentYear});
+  } else {
+    res.send(`Hello ${req.user}, welcome back!`);
+  }
+
   /* index.ejs params:
     1. totalBooks: Total number of read books
     2. pageNavLength: Number of places on the page nav bar
@@ -65,120 +187,111 @@ app.get('/', async (req, res) => {
     5. locals.books: Result rows for current page queried from database
     6. currentYear: Current year number, like: 2025
   */
-  let sort = req.query.sort; // Check the sort type of books
-  let page = req.query.page; // Check the starting index of books on this page
+//   let sort = req.query.sort; 
+//   let page = req.query.page; 
 
-  // If it's the 1st time user gets this route, use default value for everything
-  if (!sort) {
-    sort = "datetime";
-    page = "1";
-  } else if (sort === "date") {
-    // Solve the inconsistency between front and back end
-    sort = "datetime";
-  }
+//   // If it's the 1st time user gets this route, use default value for everything
+//   if (!sort) {
+//     sort = "datetime";
+//     page = "1";
+//   } else if (sort === "date") {
+//     // Solve the inconsistency between front and back end
+//     sort = "datetime";
+//   }
 
-  console.log(`Sort type: ${sort}. Page: ${page}.`);
+//   const totalBookQuery = 
+//   `SELECT COUNT(*) FROM books_basic_info;`;
 
-  /*
-    Start queries to database. Syntax:
-    SELECT select_list
-      FROM table_expression
-      [ ORDER BY ... ]
-      [ LIMIT { count | ALL } ]
-      [ OFFSET start ]
-  */
+//   let totalBooks = 0;
+//   let books;
 
-  const totalBookQuery = 
-  `SELECT COUNT(*) FROM books_basic_info;`;
+//   try {
+//     const result = await pool.query(totalBookQuery);
+//     totalBooks = parseInt(result.rows[0].count, 10);
+//     if (totalBooks === 0) {
+//       console.log("There's no book at all.")
+//     } else {
+//       const homeViewQuery = 
+//       `SELECT books_basic_info.id, title, rating, notes, datetime, author, tags, book_id_type, book_id_num, book_cover_src
+//       FROM books_basic_info LEFT JOIN books_full_info 
+//       ON books_basic_info.id = books_full_info.id 
+//       ORDER BY ${sort} DESC
+//       LIMIT ${maxBookPerPage}
+//       OFFSET ${(page - 1) * maxBookPerPage}
+//       ;`;
 
-  let totalBooks = 0;
-  let books;
+//       const result = await pool.query(homeViewQuery);
+//       books = result.rows;
 
-  try {
-    const result = await db.query(totalBookQuery);
-    totalBooks = parseInt(result.rows[0].count, 10);
-    if (totalBooks === 0) {
-      // Show empty status
-      console.log("There's no book at all.")
-    } else {
-      // Get all the books for this page
-      const homeViewQuery = 
-      `SELECT books_basic_info.id, title, rating, notes, datetime, author, tags, book_id_type, book_id_num, book_cover_src
-      FROM books_basic_info LEFT JOIN books_full_info 
-      ON books_basic_info.id = books_full_info.id 
-      ORDER BY ${sort} DESC
-      LIMIT ${maxBookPerPage}
-      OFFSET ${(page - 1) * maxBookPerPage}
-      ;`;
+//       // Get all the tags of all the books in the database
+//       const tagQuery = `SELECT tags FROM books_full_info;`;
+//       const result2 = await pool.query(tagQuery);
+//       let allTagsStringRaw = "";
+//       result2.rows.forEach(row => {
+//         if (row.tags != null)
+//           allTagsStringRaw += row.tags;
+//       });
 
-      const result = await db.query(homeViewQuery);
-      books = result.rows;
+//       const allTagsArray = allTagsStringRaw.split("#");
+//       const tagCount = new Map();
+//       allTagsArray.forEach((tag) => {
+//         tag = tag.trim();
+//         if (tag === "" || tag == null) {
+//           return;
+//         }
 
-      // Get all the tags of all the books in the database
-      const tagQuery = `SELECT tags FROM books_full_info;`;
-      const result2 = await db.query(tagQuery);
-      let allTagsStringRaw = "";
-      result2.rows.forEach(row => {
-        if (row.tags != null)
-          allTagsStringRaw += row.tags;
-      });
+//         if (tagCount.has(tag)) { 
+//           tagCount.set(tag, tagCount.get(tag) + 1); 
+//         } else { 
+//           tagCount.set(tag, 1); 
+//         }
+//       });
 
-      const allTagsArray = allTagsStringRaw.split("#");
-      const tagCount = new Map();
-      allTagsArray.forEach((tag) => {
-        tag = tag.trim();
-        if (tag === "" || tag == null) {
-          return;
-        }
+//       var sortedTags = new Map(
+//         [...tagCount.entries()].sort((a, b) => b[1] - a[1])
+//       );
+//     }
+//   } catch(err) {
+//     console.error(err);
+//   }
 
-        if (tagCount.has(tag)) { 
-          tagCount.set(tag, tagCount.get(tag) + 1); 
-        } else { 
-          tagCount.set(tag, 1); 
-        }
-      });
+//   const data = {
+//     totalBooks : totalBooks,
+//     pageNavLength : pageNavLength,
+//     sortType : sort,
+//     page : page,
+//     books : books,
+//     tags: sortedTags,
+//     currentYear : currentYear
+//   };
 
-      var sortedTags = new Map(
-        [...tagCount.entries()].sort((a, b) => b[1] - a[1])
-      );
-    }
-  } catch(err) {
-    console.error(err);
-  }
+//   res.render('preLogin.ejs', {currentYear: currentYear});
+// })
 
-  const data = {
-    totalBooks : totalBooks,
-    pageNavLength : pageNavLength,
-    sortType : sort,
-    page : page,
-    books : books,
-    tags: sortedTags,
-    currentYear : new Date().getFullYear()
-  };
+// app.get('/user/:userid/addBook', async (req, res) => {
+//   // Must do authentication check. If fails send 401
+//   res.render('addBook.ejs', {bookReview : {}, bookId: null});
+// })
 
-  res.render('index.ejs', data);
+// app.get('/user/:userid/addBook/:bookid', async (req, res) => {
+//   // Must do authentication check. If fails send 401
+//   const bookId = req.params.bookid;
+//   try {
+//     const query = `SELECT books_basic_info.id, title, rating, notes, datetime, author, tags, book_id_type, book_id_num, book_cover_src
+//       FROM books_basic_info LEFT JOIN books_full_info 
+//       ON books_basic_info.id = books_full_info.id
+//       WHERE books_basic_info.id = $1;`;
+//     const result = await db.query(query, [bookId]);
+//     const bookReview = result.rows[0];
+//     res.render('addBook.ejs', {bookReview : bookReview, bookId: bookId});
+//   } catch(err) {
+//     res.status(500).send("Unexpected error.");
+//   }  
 })
 
-app.get('/addBook', (req, res) => {
-  res.render('addBook.ejs', {bookReview : {}, bookId: null});
-})
+app.post('/user/:userid/submitBook', async (req, res) => {
+  // Must do authentication check. If fails send 401
 
-app.get('/addBook/:id', async (req, res) => {
-  const bookId = req.params.id;
-  try {
-    const query = `SELECT books_basic_info.id, title, rating, notes, datetime, author, tags, book_id_type, book_id_num, book_cover_src
-      FROM books_basic_info LEFT JOIN books_full_info 
-      ON books_basic_info.id = books_full_info.id
-      WHERE books_basic_info.id = $1;`;
-    const result = await db.query(query, [bookId]);
-    const bookReview = result.rows[0];
-    res.render('addBook.ejs', {bookReview : bookReview, bookId: bookId});
-  } catch(err) {
-    res.status(500).send("Unexpected error.");
-  }  
-})
-
-app.post('/submitBook', async (req, res) => {
   /* req.body:
   {
     title: 'TEST TITLE',
@@ -244,7 +357,8 @@ app.post('/submitBook', async (req, res) => {
   res.redirect('/');
 })
 
-app.post('/editBook/:id', async (req, res) => {
+app.post('/user/:userid/editBook/:id', async (req, res) => {
+  // Must do authentication check. If fails send 401
   const bookId = req.params.id;
   const editedBook = req.body;
 
@@ -346,4 +460,8 @@ function ifExtraBookInfo(book) {
   if (book.tags !== '' && book.tags != null) {return true;}
 
   return false;
+}
+
+function generateToken() {
+  return crypto.randomBytes(16).toString("hex");
 }

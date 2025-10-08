@@ -1,0 +1,80 @@
+<%- include('header'); %>
+<link rel="stylesheet" href="base.css">
+<div class="account-main account-body login-start account-anonymous "
+style="margin-top: 10vh; ">
+  <h1>Sign Up</h1>
+
+  <div class="account-tabcon-start">
+    <div class="account-form">
+      <div class="account-form-tips" style="height: 15%"></div>
+      <div class="account-form-error" ><span class="hide"></span></div>
+  
+      <div class="account-form-raw">
+        <label>Username: </label>
+        <div>
+          <input id="username" type="text" name="username" maxlength="15" class="account-form-input" tabindex="1" autocomplete="off">
+          <label for="username" class="tips">Please use no more than 15 characters.</label>
+          <p class="tips" style="color: red; display: none;" id="usernameErr">This username already exists.</p>
+        </div>
+      </div>
+
+      
+      <div class="account-form-raw">
+        <label>Password: </label>
+        <div>
+          <input id="password" type="text" name="password" maxlength="18" class="account-form-input" tabindex="2" autocomplete="off">
+          <label for="password" class="tips">Please use fewer than 18 characters.</label>
+        </div>
+      </div>
+
+      <div class="account-form-raw">
+        <label>Invitation code: </label>
+        <div>
+          <input id="invitationCode" type="text" name="invitationCode" maxlength="8" class="account-form-input" tabindex="2" autocomplete="off">
+          <label for="invitationCode" class="tips">Should be an 8-character code</label>
+          <p class="tips" style="color: red; display: none;" id="invitationCodeErr">This invitation code doesn't exist. Please contact developer for a code</p>
+        </div>
+      </div>
+
+      
+      <div class="account-form-field-submit " style="margin-top: 20px;">
+        <a class="btn btn-phone " id="signUpSubmit">Sign up</a>
+      </div>
+
+    </div> 
+  </div>
+  <div class="captcha-error hide fixed" id="unknownErr">Encountered a problem <a href="javascript:window.location.reload()" data-action="captch_error">Refresh</a></div>
+</div>
+<script>
+  $("#signUpSubmit").on("click", async function() {
+    $("#invitationCodeErr").hide();
+    $("#usernameErr").hide();
+    $("#unknownErr").addClass("hide");
+
+    const username = $("#username").val();
+    const password = $("#password").val();
+    const invitationCode = $("#invitationCode").val();
+
+    const res = await fetch("/signUp", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ username: username, password: password, invitationCode: invitationCode }),
+    });
+
+    if (res.ok) {
+      alert("Signed up!");
+      window.location.href = "/";
+    } else {
+      const { errType } = await res.json();
+
+      if (errType === "CODE") {
+        $("#invitationCodeErr").show();
+      } else if (errType === "USERNAME") {
+        $("#usernameErr").show();
+      } else if (errType === "UNKNOWN") {
+        $("#unknownErr").removeClass("hide");
+      }
+    }
+  })
+</script>
+<%- include('footer'); %>
