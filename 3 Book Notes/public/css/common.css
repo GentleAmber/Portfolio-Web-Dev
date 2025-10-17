@@ -1,0 +1,103 @@
+.interest-list,.subject-list {
+    margin-top: 5px
+}
+
+.site-item,.subject-item {
+    overflow: hidden;
+    zoom:1;border-top: 1px dashed #ddd;
+    padding: 20px 0 10px
+}
+
+.site-item .pic,.subject-item .pic {
+    float: left;
+    margin-right: 20px
+}
+
+.site-item .info,.subject-item .info {
+    overflow: hidden;
+    zoom:1;color: #666
+}
+
+.site-item .info h2,.subject-item .info h2 {
+    font-size: 14px;
+    margin-bottom: 6px
+}
+
+.subject-item .pub {
+    margin: 6px 0 8px
+}
+
+.subject-item .short-note {
+    background: #f8f8f8;
+    padding: 5px 10px
+}
+
+.subject-item .short-note .tags {
+    margin-left: 3px
+}
+
+.subject-item .short-note .comment {
+    margin: 5px 0
+}
+
+.subject-item .info .ft {
+    margin-top: 10px;
+    min-height: 19px;
+    position: relative
+}
+
+.subject-item .info .ft .ebook-link {
+    bottom: 0;
+    position: absolute;
+    right: 0
+}
+
+.subject-item .buy-info a:link,.subject-item .buy-info a:visited,.subject-item .collect-info a:link,.subject-item .collect-info a:visited,.subject-item .read-actions a:link,.subject-item .read-actions a:visited {
+    color: #bbb
+}
+
+.subject-item .buy-info a:hover,.subject-item .collect-info a:hover,.subject-item .read-actions a:hover {
+    background: #37a;
+    color: #fff
+}
+
+.subject-item .collect-info span {
+    margin-right: 10px
+}
+
+.subject-item .cart-actions {
+    color: #bbb;
+    margin-top: 10px
+}
+
+.subject-item .buy-info {
+    margin-right: 10px
+}
+
+.subject-item .market-info {
+    margin-left: 0
+}
+
+.subject-item .ebook-link a:link,.subject-item .ebook-link a:visited {
+    color: #973f31
+}
+
+.subject-item .ebook-link a:hover {
+    background: #973f31;
+    color: #fff
+}
+
+.subject-item .title-mark {
+    color: #999;
+    font-size: 13px;
+    margin-left: 6px
+}
+
+.site-item .pic img {
+    margin: 0 5px
+}
+
+.site-item .followers {
+    color: #999;
+    margin-top: 5px
+}
