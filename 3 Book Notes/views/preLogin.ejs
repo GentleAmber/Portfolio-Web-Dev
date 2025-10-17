@@ -1,5 +1,5 @@
 <%- include('header'); %>
-<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="/css/base.css">
 <div class="account-main account-body login-wrap login-start account-anonymous "
 style="margin-top: 10vh">
   <h1>Welcome</h1>
@@ -20,7 +20,7 @@ style="margin-top: 10vh">
   <div class="account-form-raw">
     <label class="account-form-label">Password: </label>
     <div class="account-form-field account-form-codes">
-      <input id="password" type="text" name="password" maxlength="18" class="account-form-input" placeholder="Password" tabindex="2" autocomplete="off">
+      <input id="password" type="password" name="password" maxlength="40" class="account-form-input" placeholder="Password" tabindex="2" autocomplete="off">
       <div class="tips hide" style="color: red;" id="errorMessage">Encountered a problem <a href="javascript:window.location.reload()" data-action="captch_error">Refresh</a></div>
     </div>
   </div>
@@ -60,7 +60,7 @@ style="margin-top: 10vh">
         $("#errorMessage").removeClass("hide");
       }
     } else {
-      alert("Logged in! You don't have to log in again in the next 7 days.");
+      alert("Logged in!");
       const { userID } = await res.json();
       window.location.href = "/user/" + userID;
     }

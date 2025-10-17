@@ -2,7 +2,7 @@
 <style>
   #onlyDiv {
     height: 50vh;
-    color: #45A353;
+    
     text-align: center;
     font-size: large;
     font-weight: bold;
@@ -14,6 +14,13 @@
   }
 </style>
 <div id="onlyDiv">
-  <h1>Something is wrong with this user's status. Unable to see the page now.</h2>
+  <h1 style="color: #45A353; ">Something is wrong with this user's status. Unable to see the page now.</h1>
+  <h2 style="color: #45A353; font-size: xx-large;">Will redirect to home page in 3 seconds.</h2>
 </div>
+
+<script>
+  setTimeout(() => {
+    window.location.href = '/';
+  }, 3000);
+</script>
 <%- include('footer') %>

@@ -1,16 +1,12 @@
 <%- include('header'); %>
   <div id="wrapper">
     <div id="content">
-      <div class="user-profile-nav" id="db-usr-profile">
-        <div class="personalInfo">
-          <div class="pic">
-            <img height="48" width="48" alt="Sentry" src="https://img1.doubanio.com/icon/u153964408-30.jpg" />
-          </div>
-          <div class="info">
-            <h1>Books I Have Read (<%= totalBooks %>)</h1>
-          </div>
+      <div id="db-usr-profile">
+        <div class="info">
+          <h1>Books <%= username %> Has Read (<%= totalBooks %>)</h1>
+          <a id="logOut" href="javascript:;"><u>Log out</u></a>
         </div>
-        <form action="/addBook" style="display: inline">
+        <form action="/user/<%= userID %>/addBook" style="display: inline">
           <button class="btn highlight">Add a book</button>
         </form>
       </div>
@@ -18,13 +14,13 @@
         <div class="article">
           <div class="opt-bar clearfix">
             <div class="sort">
-              <a href="/?sort=date&amp;page=1"> Order by time </a>
+              <a href="/user/<%= userID %>?sort=date&amp;page=1"> Order by time </a>
               <span class="gray-dot">·</span>
 
-              <a href="/?sort=rating&amp;page=1"> Order by rating </a>
+              <a href="/user/<%= userID %>?sort=rating&amp;page=1"> Order by rating </a>
               <span class="gray-dot">·</span>
 
-              <a href="/?sort=title&amp;page=1"> Order by title </a>
+              <a href="/user/<%= userID %>?sort=title&amp;page=1"> Order by title </a>
             </div>
             <div class="mode">
               <span class="subject-num">
@@ -84,7 +80,7 @@
                     </p>
 
                     <div class="opt-l">
-                      <a class="j a_collect_btn" href="/addBook/<%= book.id %>" data-id="<%= book.id %>">
+                      <a class="j a_collect_btn" href="/user/<%= userID %>/addBook/<%= book.id %>" data-id="<%= book.id %>">
                         Edit
                       </a>
                       &nbsp;&nbsp;
@@ -101,40 +97,42 @@
           <% } %>
 
         <div class="paginator">
-          <% if (page> 1) { %>
-            <a href="/?sort=<%= sortType %>&amp;page=<%= page-1 %>">
+          <% if (page > 1) { %>
+            <a href="/user/<%= userID %>?sort=<%= sortType %>&amp;page=<%= page-1 %>">
               <span class="prev"> &lt;Previous </span>
             </a>
+          <% } %>
+          <% const totalPages=Math.ceil(totalBooks / maxBookPerPage)===0 ? 1 : Math.ceil(totalBooks /
+            maxBookPerPage) %>
+          <% if (totalPages > pageNavLength) { %> 
+            <% for (let p = 1; p <= pageNavLength; p++) { %>
+              <% if (p < Math.floor(pageNavLength * 2 / 3)) {%>
+                <a href="/user/<%= userID %>?sort=<%= sortType %>&amp;page=<%= p %>" data-pid="<%= p %>">
+                  <%= p %>
+                </a>
+              <% } else if (p === Math.floor(pageNavLength * 2 / 3)) { %>
+                <span class="break">...</span>
+              <% } else { %>
+                <% p = totalPages + 1 - (pageNavLength - Math.floor(pageNavLength * 2 / 3)) %>
+                  <a href="/user/<%= userID %>?sort=<%= sortType %>&amp;page=<%= p %>" data-pid="<%= p %>">
+                    <%= p %>
+                  </a>
+              <% } %>
             <% } %>
-              <% const totalPages=Math.ceil(totalBooks / maxBookPerPage)===0 ? 1 : Math.ceil(totalBooks /
-                maxBookPerPage) %>
-                <% if (totalPages> pageNavLength) { %> <% for (let p=1; p <=pageNavLength; p++) { %>
-                    <% if (p < Math.floor(pageNavLength * 2 / 3)) {%>
-                      <a href="/?sort=<%= sortType %>&amp;page=<%= p %>" data-pid="<%= p %>">
-                        <%= p %>
-                      </a>
-                      <% } else if (p===Math.floor(pageNavLength * 2 / 3)) { %>
-                        <span class="break">...</span>
-                        <% } else { %>
-                          <% p=totalPages + 1 - (pageNavLength - Math.floor(pageNavLength * 2 / 3)) %>
-                            <a href="/?sort=<%= sortType %>&amp;page=<%= p %>" data-pid="<%= p %>">
-                              <%= p %>
-                            </a>
-                            <% } %>
-                              <% } %>
-                                <% } else { %>
-                                  <% for (let p=1; p <=totalPages; p++) { %>
-                                    <a href="/?sort=<%= sortType %>&amp;page=<%= p %>" data-pid="<%= p %>">
-                                      <%= p %>
-                                    </a>
-                                    <% } %>
-                                      <% } %>
-                                        <% if (page < totalPages) { %>
-                                          <span class="next">
-                                            <a
-                                              href="?sort=<%= sortType %>&amp;page=<%= parseInt(page)+1 %>">Next</a>
-                                          </span>
-                                          <% } %>
+          <% } else { %>
+            <% for (let p = 1; p <= totalPages; p++) { %>
+              <a href="/user/<%= userID %>?sort=<%= sortType %>&amp;page=<%= p %>" data-pid="<%= p %>">
+                <%= p %>
+              </a>
+            <% } %>
+          <% } %>
+
+          <% if (page < totalPages) { %>
+            <span class="next">
+              <a
+                href="/user/<%= userID %>?sort=<%= sortType %>&amp;page=<%= parseInt(page)+1 %>">Next</a>
+            </span>
+          <% } %>
         </div>
         </div>
         <div class="aside">
@@ -142,7 +140,7 @@
             <span>All Tags</span>
             &nbsp;·&nbsp;·&nbsp;·&nbsp;·&nbsp;·&nbsp;·
           </h2>
-          <% if (tags.size===0) { %>
+          <% if (!tags) { %>
             <p>There is no tag yet.</p>
             <% } else { %>
               <ul class="tag-list mb10">
@@ -159,9 +157,39 @@
               </ul>
               <% } %>
 
-                <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
                 <script>
+                  
                   $("*[data-pid=<%= page%>]").addClass("thispage");
+
+                  $(".d_link").on("click", async function() {
+                    if (!confirm("Are you sure you want to delete this note?")) return;
+                    const userID = <%= userID %>;
+                    const bookID = $(this).data("id");
+
+                    const res = await fetch(`/user/${userID}/book/${bookID}`, {
+                      method: "DELETE"
+                    });
+
+                    if (res.ok) {
+                      window.location.href = '/user/' + userID;
+                    } else {
+                      alert('Failed to delete blog for unknown reason.');
+                    }
+                  })
+
+                  $("#logOut").on("click", async function(e) {
+                    e.preventDefault();
+                    const res = await fetch("/logOut", { method: "POST" });
+
+                    if (res.ok) {
+                      window.location.href = '/';
+
+                    } else {
+                      alert("Cannot log out for unknown reason.");
+                      window.location.href = '/';
+                    }
+                  })
+
                 </script>
         </div>
         <div class="extra"></div>

@@ -3,9 +3,10 @@
   <% if (locals.bookReview) { %>
     <% ifEdit = true; %>
   <% } %>
+  <link rel="stylesheet" href="/css/addBook.css">
     
   <div class="form-wrapper">
-    <form action="/submitBook" method="post" class="book-form" id="theForm">
+    <form action="/user/<%= userID %>/submitBook" method="post" class="book-form" id="theForm">
       <label>
         Book Title*
         <input type="text" name="title" required id="bookTitle"
@@ -45,12 +46,13 @@
       </label>
 
       <label>
-        Tag (#)
-        <input type="text" id="tag-input" name="tags" placeholder="#[tag1] #[tag2] ..."
+        Tag (Format: #tag1 #tag2 ...)
+        <input type="text" id="tag-input" name="tags" placeholder="#tag"
         value="<%= ifEdit? locals.bookReview.tags : "" %>">
+        <p id="tag-error" style="color:red; display:none;">Tags must be in this format: #tag1 #tag2 and cannot contain symbols other than - and _</p>
       </label>
       <!-- <input type="hidden" name="tags" id="tags-hidden"> -->
-      <p id="tag-error" style="color:red; display:none;">Tags must be in the format #[tag]</p>
+      
 
 
       <label>
@@ -58,29 +60,47 @@
         <textarea name="notes" placeholder="Share what you think with the world" required
         maxlength="500" minlength="15" id="notes-textarea"></textarea>
       </label>
-
+      <div>
+        <div style="display: inline-block;">
+          <a href="javascript:;" id="reveal-add-cover" style="font-size: large;"><u>Add a cover</u></a>
+        </div>
+        <div id="add-cover" style="display: none;">
+          <p style="font-size: small; margin: 0;">If you have entered Book ID, a cover may be automatically fetched for you. Still you can use your own image link.</p>
+          <label style="font-size: small;">
+            <input type="url" id="imgsrc" name="imgsrc" 
+            value="<%= ifEdit? locals.bookReview.book_cover_src : "" %>">
+          </label>
+        </div>
+      </div>
       <button type="submit" class="btn highlight" id="submitButton">Submit</button>
     </form>
   </div>
   <script>
     const ifEditBoolean = <%= ifEdit %>;
-    console.log("ifEditBoolean: " + ifEditBoolean);
-    // If this is the edit mode, then change the form's action.
+    
     if (ifEditBoolean) {
-      $("#theForm").attr("action","/editBook/" + <%= locals.bookId %>);
+      // If this is the edit mode, then change the form's action.
+      $("#theForm").attr("action","/user/" + <%= userID %> +"/editBook/" + <%= locals.bookId %>);
+      
       const idType = <%- JSON.stringify(locals.bookReview.book_id_type) %>;
-      console.log("idType: " + idType);
       $("#rating-value").val(<%= locals.bookReview.rating %>);
       $("#notes-textarea").val(<%- JSON.stringify(locals.bookReview.notes) %>);
       
-      
       if (idType != null && idType != "") {
         $("#radio-" + idType).prop("checked", true);
-        $("#bookIdNum").show();
-
+        
         const idNum = <%- JSON.stringify(locals.bookReview.book_id_num) %>;
-        console.log("idNum: " + idNum);
         $("#bookIdNum").val(idNum);
+        $("#bookIdNum").show();
+        $("#clear-radio").show();
+
+      }
+
+      // src img for cover
+      const coverSrc = <%- JSON.stringify(locals.bookReview.book_cover_src) %>;
+      if (coverSrc != null && coverSrc != "") {
+        $("#imgsrc").val(coverSrc);
+        $("#add-cover").css("display", "block");
       }
     }
 
@@ -90,9 +110,10 @@
     const stars = $("#rating span");
     const ratingValue = $("#rating-value");
 
-    let currentRating = 0;
     // Used for edit mode when there may be ratingValue already.
-    highlightStars(ratingValue.val()? ratingValue.val() : currentRating);
+    let currentRating = ratingValue.val()? ratingValue.val() : 0;
+
+    highlightStars(currentRating);
 
     stars.on("mouseover", function() {
       highlightStars($(this).data("value"));
@@ -134,23 +155,44 @@
       ifSelectBookIdType = false;
     });
 
+    // "Add a cover" relevant logic
+    $("#reveal-add-cover").on("click", function() {
+      const addCoverDisplayValue = $("#add-cover").css("display");
+      if (addCoverDisplayValue == "none") {
+        $("#add-cover").css("display", "block");
+      }
+    })
+
+    // Validate data before submittion
     const submitButton = $("#submitButton");
     const idErrorMessage = $("#id-error");
     const bookTitle = $("#bookTitle");
 
     submitButton.on("click", function(e) {
       if (ifSelectBookIdType) {
-        // Check if the id is filled
+        // If any book type is selected, check if the id is filled
         if (!bookIdNumInput.val()) {
           e.preventDefault();
           idErrorMessage.show();
         } else {
           idErrorMessage.hide();
         }
-        // else {
-        //   e.preventDefault();
-        //   idErrorMessage.text("Book id should be made of numbers").show();
-        // }
+      } else {
+        idErrorMessage.hide();
+      }
+
+      // Validate the tags' format
+      const tagInput = $("#tag-input").val();
+      const regex = /^#[A-Za-z0-9_-]+(?: #[A-Za-z0-9_-]+)*$/;
+      if (tagInput) {
+        if (!regex.test(tagInput)) {
+          e.preventDefault();
+          $("#tag-error").show();
+        } else {
+          $("#tag-error").hide();
+        }
+      } else {
+        $("#tag-error").hide();
       }
     });
   });

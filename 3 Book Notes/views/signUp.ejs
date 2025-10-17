@@ -1,5 +1,5 @@
 <%- include('header'); %>
-<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="/css/base.css">
 <div class="account-main account-body login-start account-anonymous "
 style="margin-top: 10vh; ">
   <h1>Sign Up</h1>
@@ -13,7 +13,7 @@ style="margin-top: 10vh; ">
         <label>Username: </label>
         <div>
           <input id="username" type="text" name="username" maxlength="15" class="account-form-input" tabindex="1" autocomplete="off">
-          <label for="username" class="tips">Please use no more than 15 characters.</label>
+          <label for="username" class="tips">! User name cannot be changed. Please use no more than 15 characters.</label>
           <p class="tips" style="color: red; display: none;" id="usernameErr">This username already exists.</p>
         </div>
       </div>
@@ -22,8 +22,8 @@ style="margin-top: 10vh; ">
       <div class="account-form-raw">
         <label>Password: </label>
         <div>
-          <input id="password" type="text" name="password" maxlength="18" class="account-form-input" tabindex="2" autocomplete="off">
-          <label for="password" class="tips">Please use fewer than 18 characters.</label>
+          <input id="password" type="password" name="password" maxlength="40" class="account-form-input" tabindex="2" autocomplete="off">
+          <label for="password" class="tips">Please use fewer than 40 characters.</label>
         </div>
       </div>
 

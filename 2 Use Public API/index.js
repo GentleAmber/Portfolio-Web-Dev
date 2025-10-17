@@ -237,7 +237,6 @@ app.get("/result", async (req, res) => {
       minResults = maxResults;
     }
 
-    console.log("Successfully fetched objectIds. MinResults: " + minResults);
   } catch (error) {
     res.status(404).send("No data");
   }
@@ -253,28 +252,17 @@ app.get("/result", async (req, res) => {
 
     try {
       objectUrl = objectEndpoint + objectIDs[i];
-      // In order not to trigger security block, have to query slower
+      
       setTimeout(() => {
-        console.log("Delayed for 4 second.");
+        // In order not to trigger security block, query every 4 sec
       }, 4000);
       const { data } = await axios.get(objectUrl);
       
       // When the object exists, pull its info into image and then push this image 
       // object into images[].
       image = new Image(data.primaryImage, data.title, data.artistDisplayName);
-
-      // For debugging
-      if (i % 10 === 0) {
-        console.log(i + " images are pushed.");
-      }
       
-      // console.log((i + 1) + " Image fetched: " + image.title + " " + image.primaryImage);
-      
-      // if (i > 18) {
-      //   debugger; 
-      // }
     } catch (error) {
-      console.log("No. " + i + ": No data for this image. Use default value. ObjectId: " + objectIDs[i]);
       // Use default value for this object.
       image = new Image();
     } finally {
@@ -283,7 +271,6 @@ app.get("/result", async (req, res) => {
     }
   }
 
-  console.log("All " + i + " objects retrived for the current page.")
 
   const totalPages = Math.ceil(minResults / perPage);
 
@@ -343,7 +330,7 @@ function generateFilters (body) {
 
 class Image {
   constructor(primaryImage, title, artistDisplayName) {
-    this.primaryImage = primaryImage || "https://images.metmuseum.org/CRDImages/ep/original/DP346474.jpg";
+    this.primaryImage = primaryImage || "/images/defaultImage.jpg";
     this.title = title || "No data";
     this.artistDisplayName = artistDisplayName || "No data";
   }
