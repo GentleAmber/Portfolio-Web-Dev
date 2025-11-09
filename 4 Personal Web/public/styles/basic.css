@@ -1,0 +1,85 @@
+@media screen and (width >= 992px) {
+  .initial-image {
+    width: auto;
+    position: relative;
+    top: 60px;
+  }
+
+  .initial-image p {
+    margin: 0;
+  }
+
+  .initial-image #first-el {
+    right: 100px;
+    top: 90px;
+  }
+
+  .initial-image #second-el {
+    right:80px;
+    top:30px;
+  }
+
+  .initial-image #third-el {
+    bottom: 70px;
+    left: 50px;
+  }
+
+  .initial-image #last-el {
+    bottom: 80px;
+    right: 60px;
+
+  }
+
+  .initial-image a {
+    font-family: "Bowlby One SC", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 90px;
+    position: relative;
+    z-index: 1;
+    text-decoration: none;
+    display: inline-block;
+    transform: rotate(-20deg);
+    margin: 0;
+    color: #ff3f95;
+  }
+
+  #welcome {
+    font-family: "Bowlby One SC", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    margin: 0;
+    font-size: 45px;
+    color: azure;
+    padding-top: 7%;
+    position: absolute;
+    z-index: 1;
+  }
+
+  .decorative-patterns {
+    padding-top: 8%;
+  }
+
+  .decorative-patterns > .dot{
+    color: white;
+    position: relative;
+    z-index: 0;
+  }
+
+  .dot {
+    height: 25px;
+    width: 25px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+  }
+}
+
+#index-pagediv {
+  text-align: center;
+  background-color: black;
+  height: 100vh;
+}
+
+
+
