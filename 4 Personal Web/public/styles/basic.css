@@ -1,4 +1,4 @@
-@media screen and (width >= 992px) {
+@media screen and (width >= 768px) {
   .initial-image {
     width: auto;
   }
@@ -7,22 +7,22 @@
     margin: 0;
   }
 
-  .initial-image #first-el {
-    right: 100px;
+  #first-el {
+    right: 70px;
     top: 90px;
   }
 
-  .initial-image #second-el {
+  #second-el {
     right:80px;
     top:30px;
   }
 
-  .initial-image #third-el {
-    bottom: 70px;
+  #third-el {
+    bottom: 25px;
     left: 50px;
   }
 
-  .initial-image #last-el {
+  #last-el {
     bottom: 80px;
     right: 60px;
 
@@ -37,7 +37,7 @@
     z-index: 1;
     text-decoration: none;
     display: inline-block;
-    transform: rotate(-20deg);
+    /* transform: rotate(-20deg); */
     margin: 0;
     color: #ff3f95;
   }
@@ -63,9 +63,31 @@
 .slashes {
   width: 6%;
   background-color: white;
-  position:relative;
-  z-index: 1;
+  position: absolute;
+  z-index: 0;
 }
 
+/* .fade-in{
+  opacity: 0; 
+  animation: fadeIn 2s forwards;
+}
+
+@keyframes flyIn {
+  0% {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+} */
+
+.initial-image {
+  position: relative;
+}
+
+#slash1{
+  width: 100px;
+  z-index: 2;
+}
 
 
