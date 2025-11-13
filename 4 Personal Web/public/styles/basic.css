@@ -1,57 +1,43 @@
+/* !!! Setting For PC Screen*/
 @media screen and (width >= 768px) {
-  .initial-image {
-    width: auto;
-  }
-
-  .initial-image p {
-    margin: 0;
-  }
-
-  #first-el {
-    right: 70px;
+  
+  .initial-image > div:nth-child(1) {
     top: 90px;
-  }
-
-  #second-el {
-    right:80px;
-    top:30px;
-  }
-
-  #third-el {
-    bottom: 25px;
     left: 50px;
   }
 
-  #last-el {
-    bottom: 80px;
-    right: 60px;
-
+  .initial-image > div:nth-child(2) {
+    top: 40px;
+    right: 150px;
   }
 
-  .initial-image a {
-    font-family: "Bowlby One SC", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-    font-size: 90px;
-    position: relative;
-    z-index: 1;
-    text-decoration: none;
-    display: inline-block;
-    /* transform: rotate(-20deg); */
-    margin: 0;
-    color: #ff3f95;
+  .initial-image > div:nth-child(3) {
+    bottom: 10px;
+    left: 70px;
   }
 
-  #welcome {
-    font-family: "Bowlby One SC", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-    margin: 0;
-    font-size: 45px;
-    color: white;
-    padding-top: 7%;
+  .initial-image > div:nth-child(4) {
+    bottom: 60px;
+    left: -80px;
   }
+}
 
+/* !!! General Setting */
+
+.initial-image {
+  width: auto;
+}
+
+.initial-image * {
+  margin: 0;
+}
+
+.initial-image > div {
+  position: relative;
+}
+
+.outer {
+  overflow: hidden;
 }
 
 #index-page-bg {
@@ -60,29 +46,127 @@
   height: 100vh;
 }
 
+#welcome {
+  font-family: "Bowlby One SC", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  margin: 0;
+  font-size: 45px;
+  color: white;
+  padding-top: 7%;
+  opacity: 0%;
+  animation: fadeIn 2.2s ease-in forwards;
+}
+
+.initial-image a {
+  font-family: "Bowlby One SC", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 90px;
+  text-decoration: none;
+  display: inline-block;
+  color: #ff3f95;
+}
+
+.initial-image > div:nth-child(2) > a {
+  color: #d10561;
+}
+
+.initial-image > div:nth-child(4) > a {
+  color: #d10561;
+}
+
 .slashes {
-  width: 6%;
-  background-color: white;
+  
+  background-color: #f4b2d0;
   position: absolute;
   z-index: 0;
 }
 
-/* .fade-in{
-  opacity: 0; 
-  animation: fadeIn 2s forwards;
+
+
+.initial-image > div:nth-child(1) {
+  left: 80%;
+  animation: flyInRight 1.5s ease-out forwards;
+  animation-delay: 1.5s;
 }
 
-@keyframes flyIn {
-  0% {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+.initial-image > div:nth-child(2) {
+  left: -80%;
+  animation: flyInLeft 1.5s ease-out forwards;
+  animation-delay: 2s;
+}
+
+.initial-image > div:nth-child(3) {
+  left: 80%;
+  animation: flyInRight 1.5s ease-out forwards;
+  animation-delay: 2.3s;
+}
+
+.initial-image > div:nth-child(4) {
+  left: -80%;
+  animation: flyInLeft 1.5s ease-out forwards;
+  animation-delay: 2.4s;
+}
+
+#horizontal-slash {
+  left: -150%;
+  width: 50%;
+  height: 10vh;
+  clip-path: polygon(0 0, 80% 0, 100% 100%, 0 100%);
+  animation: flyInLeftPattern 1.5s ease-out forwards;
+  animation-delay: 2.4s;
+  background-image: linear-gradient(to right, #780438, #f0a1c5);  
+}
+
+/* .dots {
+  position: absolute;
+  z-index: 0;
+  background-color: white;
+  
+}
+
+#vertical-dots {
+  width: 50%;
+  height: 50%;
+  transform: rotate(90deg);
 } */
 
-.initial-image {
-  position: relative;
+
+@keyframes flyInRight {
+  from {
+    left: 80%;
+  }
+  to {
+    left: 0%;
+  }
+}
+
+@keyframes flyInLeft {
+  from {
+    left: -80%;
+  }
+  to {
+    left: 0;
+  }
+}
+
+@keyframes flyInLeftPattern {
+  from {
+    left: -150%;
+  }
+  to {
+    left: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0%;
+  }
+  to {
+    opacity: 100%;
+  }
 }
 
 #slash1{
