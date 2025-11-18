@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amber Wang</title>
+  <link rel="icon" href="./images/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+  
+  <script src="./../scripts/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="./../styles/basic.css">
+  <link rel="stylesheet" href="./../styles/subpage.css">
+</head>
+<body>
+  <div class="page-bg" id="works-page-bg">
+    <div class="navbar">
+      <a href="./../index.html" class="navbar-name"><strong>Amber Wang</strong></a>
+      <div class="navbar-items-col">
+        <a href="./../aboutme.html">About Me</a>
+        <a href="./coding.html">Works</a>
+        <a href="./../interests.html">Interests</a>
+        <a href="./../contact.html">Contact</a>
+      </div>
+    </div>
+    <div class="btn-group"> 
+      <button type="button" class="">Coding</button> 
+      <button type="button" class="">Illustrations</button> 
+    </div>
+    <div class="projects">
+      <div id="game-container">
+          <button id="start-button">Start Game</button>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  $(document).ready(function () {
+    // Solve this underline problem
+    const current = window.location.pathname;
+    console.log(current);
+
+    $("navbar a").each(function () {
+      const href = $(this).attr("href");
+
+      // Ensure href ends with "/" (folder)
+      const folder = href.endsWith("/") ? href : href + "/";
+
+      // Highlight if current page starts with that folder
+      if (current.startsWith(folder)) {
+          $(this).css("text-decoration", "underline");
+      }
+    });
+  });
+</script>
+</html>

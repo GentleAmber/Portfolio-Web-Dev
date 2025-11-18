@@ -1,0 +1,68 @@
+.not-in-use {
+  font-family: "Nunito", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300; /* <weight>: Use a value from 200 to 1000 */
+  font-style: normal;
+  font-size: 25px;
+  color: white;
+}
+
+.page-bg {
+  font-family: "Nunito", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600; /* <weight>: Use a value from 200 to 1000 */
+  font-style: normal;
+  font-size: 28px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 30px;
+}
+
+.btn-group { 
+  display: inline-flex;
+  margin-left: 1.5%;
+  
+}
+.btn-group > button {
+  font-family: "Nunito", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300; /* <weight>: Use a value from 200 to 1000 */
+  font-style: normal;
+  padding: 1px 15px;
+  background-color: black;
+  color: white;
+  border-color: white;
+  border-width: 2px;
+}
+.btn-group > button:nth-child(1) {
+  font-size: 20px;
+  border-top-left-radius: 0.38em;
+  border-bottom-left-radius: 0.38em;
+}
+.btn-group > button:last-child {
+  font-size: 20px;
+  border-top-right-radius: 0.38em;
+  border-bottom-right-radius: 0.38em;
+}
+.navbar {
+  padding: 20px 0 20px 0;
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(220, 220, 220, 0.702);
+  /* background-color: rgba(166, 164, 161, 0.702); */
+}
+.navbar a {
+  color: black;
+}
+.navbar-name {
+  padding-left: 1.5%;
+}
+.navbar-items-col {
+  padding-right: 3%;
+  display: flex;
+  column-gap: 35px;
+
+}
+a {
+  text-decoration: none;
+}
