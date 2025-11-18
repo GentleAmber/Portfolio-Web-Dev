@@ -1,49 +1,48 @@
 /* !!! Setting For PC Screen*/
 @media screen and (width >= 768px) {
   
-  .initial-image > div:nth-child(1) {
+  .menu > div:nth-child(1) {
     top: 90px;
     left: 50px;
   }
 
-  .initial-image > div:nth-child(2) {
+  .menu > div:nth-child(2) {
     top: 40px;
     right: 150px;
   }
 
-  .initial-image > div:nth-child(3) {
+  .menu > div:nth-child(3) {
     bottom: 10px;
     left: 70px;
   }
 
-  .initial-image > div:nth-child(4) {
+  .menu > div:nth-child(4) {
     bottom: 60px;
     left: -80px;
   }
 }
 
 /* !!! General Setting */
-
-.initial-image {
+body {
+  margin: 0;
+}
+.menu {
   width: auto;
 }
 
-.initial-image * {
+.menu * {
   margin: 0;
 }
 
-.initial-image > div {
+.menu > div {
   position: relative;
 }
 
-.outer {
-  overflow: hidden;
-}
-
-#index-page-bg {
+.page-bg {
   text-align: center;
   background-color: black;
   height: 100vh;
+  overflow: hidden;
 }
 
 #welcome {
@@ -55,10 +54,11 @@
   color: white;
   padding-top: 7%;
   opacity: 0%;
-  animation: fadeIn 2.2s ease-in forwards;
+  animation: fadeIn 1.5s ease-in forwards;
+  user-select: none;
 }
 
-.initial-image a {
+.menu a {
   font-family: "Bowlby One SC", sans-serif;
   font-weight: 400;
   font-style: normal;
@@ -66,13 +66,14 @@
   text-decoration: none;
   display: inline-block;
   color: #ff3f95;
+  z-index: 2;
 }
 
-.initial-image > div:nth-child(2) > a {
+.menu > div:nth-child(2) > a {
   color: #d10561;
 }
 
-.initial-image > div:nth-child(4) > a {
+.menu > div:nth-child(4) > a {
   color: #d10561;
 }
 
@@ -85,28 +86,28 @@
 
 
 
-.initial-image > div:nth-child(1) {
+.menu > div:nth-child(1) {
   left: 80%;
-  animation: flyInRight 1.5s ease-out forwards;
+  animation: flyInRight 1s ease-out forwards;
+  animation-delay: 1s;
+}
+
+.menu > div:nth-child(2) {
+  left: -80%;
+  animation: flyInLeft 1s ease-out forwards;
   animation-delay: 1.5s;
 }
 
-.initial-image > div:nth-child(2) {
-  left: -80%;
-  animation: flyInLeft 1.5s ease-out forwards;
-  animation-delay: 2s;
-}
-
-.initial-image > div:nth-child(3) {
+.menu > div:nth-child(3) {
   left: 80%;
-  animation: flyInRight 1.5s ease-out forwards;
-  animation-delay: 2.3s;
+  animation: flyInRight 1s ease-out forwards;
+  animation-delay: 1.8s;
 }
 
-.initial-image > div:nth-child(4) {
+.menu > div:nth-child(4) {
   left: -80%;
-  animation: flyInLeft 1.5s ease-out forwards;
-  animation-delay: 2.4s;
+  animation: flyInLeft 1s ease-out forwards;
+  animation-delay: 1.9s;
 }
 
 #horizontal-slash {
@@ -115,23 +116,22 @@
   height: 10vh;
   clip-path: polygon(0 0, 80% 0, 100% 100%, 0 100%);
   animation: flyInLeftPattern 1.5s ease-out forwards;
-  animation-delay: 2.4s;
+  animation-delay: 1.4s;
   background-image: linear-gradient(to right, #780438, #f0a1c5);  
 }
 
-/* .dots {
-  position: absolute;
-  z-index: 0;
-  background-color: white;
-  
+.menu-li p {
+  user-select: none;
 }
 
-#vertical-dots {
-  width: 50%;
-  height: 50%;
-  transform: rotate(90deg);
-} */
+.menu-li p:hover{
+  transform: scale(1.1);
+  color: rgb(240, 164, 1);
+}
 
+.menu-li p:active {
+  transform: scale(0.95);
+}
 
 @keyframes flyInRight {
   from {
