@@ -1,0 +1,46 @@
+/* :root {
+  --bg: #111;
+  --panel: #222;
+  --accent: #5cc;
+  --page-left-padding: 1.5%;
+} */
+div.projects {
+  padding-left: 100px;
+}
+.helper {
+  font-size: 18px;
+  margin: 0;
+}
+.game-window {
+  display: flex;
+  width: 70%;
+  height: 30%;
+}
+.game-canvas {
+  border: 1px solid #ffffff;
+  margin-top: 12px;
+}
+.startBtn {
+  background-color: black;
+  border: 1px solid white;
+  font-size: xx-large;
+  padding: 5px 15px;
+}
+.startBtn:hover {
+  background-color: white;
+  border: 1px solid black;
+  color: black;
+}
+.screen-and-info {
+  display: flex;
+  gap: 20px;
+}
+.hud {
+  margin-top: 15px;
+  border: 1px solid white;
+  padding: 0 30px 80px 10px;
+}
+
+.info {
+  margin-top: 12px;
+}

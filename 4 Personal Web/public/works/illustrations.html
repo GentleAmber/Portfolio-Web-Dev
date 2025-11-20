@@ -11,8 +11,8 @@
 
   <link rel="stylesheet" href="./../styles/basic.css">
   <link rel="stylesheet" href="./../styles/subpage.css">
-  <link rel="stylesheet" href="./../styles/works.css">
-
+  <!-- <link rel="stylesheet" href="./../styles/works.css"> -->
+   
   <script src="./../scripts/jquery-3.7.1.min.js"></script>
   <script src="./../scripts/tankgame.js"></script>
 </head>
@@ -32,26 +32,8 @@
       <button type="button" class="nav-button default-btn" id="illustrations">Illustrations</button> 
     </div>
     <div class="projects">
-      <div class="game-window" id="gameWindow">
-        <div class="game-body">
-          <div class="game-header">
-            <div class="game-title">Tank Game</div>
-            <div class="helper">
-              Controls: WASD / Arrow keys to move — J to shoot
-            </div>
-          </div>
-          <div class="screen-and-info">
-            <canvas class="game-canvas" width="640" height="480"></canvas>
-            <div class="info">
-              <button class="startBtn">Start</button>
-              <div class="hud">
-                <div class="stat">Player life: <span id="playerHp">100</span></div>
-                <div class="stat">Enemies Alive: <span id="enemiesCount">3</span></div>
-                <div class="stat">Bullets: <span id="bulletsCount">0</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div id="game-container">
+          <button id="start-button">Start Game</button>
       </div>
     </div>
     <footer>
@@ -70,8 +52,9 @@
 
     $(".navbar-items-col a").each(function () {
       const id = $(this).attr("id");
+
       if (current.indexOf(id) > -1) {
-        $(this).addClass("nav-item-highlight");
+        $(this).css("text-decoration", "underline");
         $(this).on("click", function(e) {
           e.preventDefault();
         })
@@ -88,9 +71,9 @@
       }
     })
 
-    // After clicking the illustration button, go to the page
-    $("#illustrations").on("click", function() {
-      window.location.href = "./illustrations.html";
+    // After clicking the coding button, go to the page
+    $("#coding").on("click", function() {
+      window.location.href = "./coding.html";
     })
   });
 </script>

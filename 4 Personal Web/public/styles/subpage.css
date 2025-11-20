@@ -1,17 +1,11 @@
-.not-in-use {
+* {
   font-family: "Nunito", sans-serif;
   font-optical-sizing: auto;
-  font-weight: 300; /* <weight>: Use a value from 200 to 1000 */
   font-style: normal;
-  font-size: 25px;
   color: white;
 }
-
 .page-bg {
-  font-family: "Nunito", sans-serif;
-  font-optical-sizing: auto;
   font-weight: 600; /* <weight>: Use a value from 200 to 1000 */
-  font-style: normal;
   font-size: 28px;
   display: flex;
   flex-direction: column;
@@ -24,10 +18,7 @@
   
 }
 .btn-group > button {
-  font-family: "Nunito", sans-serif;
-  font-optical-sizing: auto;
   font-weight: 300; /* <weight>: Use a value from 200 to 1000 */
-  font-style: normal;
   padding: 1px 15px;
   background-color: black;
   color: white;
@@ -44,6 +35,15 @@
   border-top-right-radius: 0.38em;
   border-bottom-right-radius: 0.38em;
 }
+.btn-group button.btn-highlight {
+  background-color: white;
+  color: black;
+  font-weight: 700;
+}
+.btn-group button.default-btn:hover {
+  background-color: rgb(221, 221, 221);
+  color: black;
+}
 .navbar {
   padding: 20px 0 20px 0;
   display: flex;
@@ -55,14 +55,28 @@
   color: black;
 }
 .navbar-name {
-  padding-left: 1.5%;
+  padding-left: var(--page-left-padding);
+  font-weight: 800;
 }
 .navbar-items-col {
   padding-right: 3%;
   display: flex;
   column-gap: 35px;
+}
+.navbar a:not(.nav-item-highlight):hover {
+  animation: navItemColorChange 0.15s ease-out forwards;
 
 }
 a {
   text-decoration: none;
+}
+@keyframes navItemColorChange {
+  to {
+    color: rgb(245, 251, 128);
+  }
+}
+.nav-item-highlight {
+  text-decoration: underline;
+  pointer-events: none;
+  cursor: default;
 }

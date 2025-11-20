@@ -1,3 +1,8 @@
+/* Global variants */
+:root {
+  --page-left-padding: 1.5%;
+}
+
 /* !!! Setting For PC Screen*/
 @media screen and (width >= 768px) {
   
@@ -23,6 +28,12 @@
 }
 
 /* !!! General Setting */
+* {
+  font-family: "Bowlby One SC", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
 body {
   margin: 0;
 }
@@ -39,16 +50,14 @@ body {
 }
 
 .page-bg {
-  text-align: center;
   background-color: black;
-  height: 100vh;
-  overflow: hidden;
 }
-
+#index-page-bg {
+  overflow: hidden;
+  text-align: center;
+  height: 100vh;
+}
 #welcome {
-  font-family: "Bowlby One SC", sans-serif;
-  font-weight: 400;
-  font-style: normal;
   margin: 0;
   font-size: 45px;
   color: white;
@@ -59,9 +68,6 @@ body {
 }
 
 .menu a {
-  font-family: "Bowlby One SC", sans-serif;
-  font-weight: 400;
-  font-style: normal;
   font-size: 90px;
   text-decoration: none;
   display: inline-block;
@@ -174,4 +180,17 @@ body {
   z-index: 2;
 }
 
-
+.footer {
+  border-top: 1px solid white;
+  color: white;
+  background-color: black;
+  padding: 10px 0 10px var(--page-left-padding);
+}
+.footer p {
+  margin: 0;
+  font-family: "Nunito", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 250; /* <weight>: Use a value from 200 to 1000 */
+  font-style: normal;
+  font-size: 15px;
+}
