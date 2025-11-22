@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="./../styles/works.css">
 
   <script src="./../scripts/jquery-3.7.1.min.js"></script>
-  <script src="./../scripts/tankgame.js"></script>
+  <!-- <script src="./../scripts/tankgame.js"></script> -->
 </head>
 <body>
   <div class="page-bg" id="works-page-bg">
@@ -41,7 +41,8 @@
             </div>
           </div>
           <div class="screen-and-info">
-            <canvas class="game-canvas" width="640" height="480"></canvas>
+            <canvas class="game-canvas" id="tank-canvas" width="640" height="480">
+            </canvas>
             <div class="info">
               <button class="startBtn">Start</button>
               <div class="hud">
@@ -66,7 +67,6 @@
 
     // Underline the current page on navbar & disable it
     const current = window.location.pathname;
-    console.log(current);
 
     $(".navbar-items-col a").each(function () {
       const id = $(this).attr("id");
@@ -81,7 +81,6 @@
     // Highlight the current nav button (coding/illustrations)
     $(".nav-button").each(function() {
       const id = $(this).attr("id");
-      console.log(id);
       if (current.indexOf(id) > -1) {
         $(this).addClass("btn-highlight");
         $(this).removeClass("default-btn");
@@ -92,6 +91,13 @@
     $("#illustrations").on("click", function() {
       window.location.href = "./illustrations.html";
     })
+
+    // Show initial hints on canvases
+    const canvas = $("#tank-canvas").get(0);
+    const hint1 = canvas.getContext("2d");
+    hint1.font = "30px sans-serif";
+    hint1.fillStyle = "#ff3f95";
+    hint1.fillText("Press start to play", 190, 240);
   });
 </script>
 </html>

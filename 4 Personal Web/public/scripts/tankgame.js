@@ -1,22 +1,28 @@
 (() => {
   /* --- Helpers --- */
-  function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
-  function dist(a,b){ let dx=a.x-b.x, dy=a.y-b.y; return Math.hypot(dx,dy); }
-  function rand(min,max){ return Math.random()*(max-min)+min; }
-  function angleTo(a,b){ return Math.atan2(b.y-a.y, b.x-a.x); }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function dist(a, b) { let dx = a.x - b.x, dy = a.y-b.y; return Math.hypot(dx, dy); }
+  function rand(min, max) { return Math.random() * (max - min) + min; }
+  function angleTo(a, b) { return Math.atan2(b.y - a.y, b.x - a.x); }
 
   /* ===== Entities ===== */
   class Bullet {
-    constructor(x,y,angle,owner) {
-      this.x = x; this.y = y;
+    constructor(x, y, angle, owner) {
+      this.x = x; 
+      this.y = y;
       const speed = 320;
       this.vx = Math.cos(angle)*speed;
       this.vy = Math.sin(angle)*speed;
-      this.radius = 4;
+      this.radius = 3;
       this.life = 2.5; // seconds
       this.owner = owner; // "player" or "enemy"
     }
-    update(dt){ this.x += this.vx*dt; this.y += this.vy*dt; this.life -= dt; }
+    update(dt) { 
+      this.x += this.vx * dt; 
+      this.y += this.vy * dt; 
+      this.life -= dt; 
+    }
+
     draw(ctx){
       ctx.beginPath();
       ctx.fillStyle = (this.owner === 'player') ? '#ffd' : '#f88';
@@ -26,23 +32,26 @@
   }
 
   class Tank {
-    constructor(x,y,color='lime') {
-      this.x = x; this.y = y;
-      this.w = 28; this.h = 36;
-      this.angle = 0; // facing direction of turret
-      this.bodyAngle = 0; // facing direction of body (for movement)
+    constructor(x, y, color = 'lime') {
+      this.x = x; 
+      this.y = y;
+      this.direction = 0; // 0: up, 1: right, 2: down, 3: left
       this.speed = 120;
-      this.turnSpeed = Math.PI*3; // unused for instant turning
-      this.color = color;
-      this.reload = 0;
+      this.dyingCounter = 0;
+      this.reload = 0; // Reload bullets
       this.reloadTime = 0.35;
-      this.hp = 100;
-      this.maxHp = 100;
+      this.life = 1;
+
+      // For drawing purpose
+      this.w = 28; 
+      this.h = 36;
+      this.color = color;  
     }
-    shoot(bullets){
+
+    shoot(bullets) {
       if (this.reload > 0) return;
-      const muzzleX = this.x + Math.cos(this.angle)* (this.h/2 + 4);
-      const muzzleY = this.y + Math.sin(this.angle)* (this.h/2 + 4);
+      const muzzleX = this.x + Math.cos(this.angle) * (this.h/2 + 4);
+      const muzzleY = this.y + Math.sin(this.angle) * (this.h/2 + 4);
       bullets.push(new Bullet(muzzleX, muzzleY, this.angle, this instanceof Enemy ? 'enemy' : 'player'));
       this.reload = this.reloadTime;
     }
@@ -64,7 +73,7 @@
       // turret
       ctx.save();
       ctx.translate(this.x, this.y);
-      ctx.rotate(this.angle);
+      // ctx.rotate(this.angle);
       ctx.fillStyle = '#333';
       ctx.fillRect(-6, -8, 12, 16); // turret base
       ctx.fillStyle = '#222';

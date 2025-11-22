@@ -48,7 +48,6 @@
 
     // Underline the current page on navbar & disable it
     const current = window.location.pathname;
-    console.log(current);
 
     $(".navbar-items-col a").each(function () {
       const id = $(this).attr("id");
@@ -64,7 +63,6 @@
     // Highlight the current nav button (coding/illustrations)
     $(".nav-button").each(function() {
       const id = $(this).attr("id");
-      console.log(id);
       if (current.indexOf(id) > -1) {
         $(this).addClass("btn-highlight");
         $(this).removeClass("default-btn");

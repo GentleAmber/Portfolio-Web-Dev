@@ -48,7 +48,6 @@ body {
 .menu > div {
   position: relative;
 }
-
 .page-bg {
   background-color: black;
 }
@@ -84,7 +83,6 @@ body {
 }
 
 .slashes {
-  
   background-color: #f4b2d0;
   position: absolute;
   z-index: 0;
