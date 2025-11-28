@@ -1,12 +1,9 @@
-/* :root {
-  --bg: #111;
-  --panel: #222;
-  --accent: #5cc;
-  --page-left-padding: 1.5%;
-} */
-div.projects {
-  padding-left: 100px;
+/* Coding */
+div.projects.coding {
+  padding-left: 23%; 
+  margin-top: 15px;
 }
+
 .helper {
   font-size: 18px;
   margin: 0;
@@ -16,21 +13,29 @@ div.projects {
   width: 70%;
   height: 30%;
 }
-.game-title {
+.game-title * {
   color: #ff3f95;
 }
 .game-canvas {
   border: 1px solid #ffffff;
+  border-radius: 15px;
   margin-top: 12px;
+  overflow: hidden;
+  height: auto;
+  width: 700px;
+  /* -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC); */
 }
-.startBtn {
+.carousel.works {
+  border-radius: 15px;
+}
+.opeBtn {
   background-color: black;
   border: 1px solid white;
   font-size: xx-large;
   padding: 5px 15px;
   color: #ff3f95;
 }
-.startBtn:hover {
+.opeBtn:hover {
   background-color: white;
   border: 1px solid black;
   color: black;
@@ -41,12 +46,27 @@ div.projects {
 }
 .hud {
   margin-top: 15px;
-  border: 1px solid white;
+  border: 1px solid rgb(52, 52, 52);
   padding: 5px 30px 80px 10px;
+  border-radius: 0.5rem;
 }
-
+.game-control-btn {
+  display: flex;
+  justify-content: space-between;
+}
+.game-control-btn button {
+  border-radius: 0.5rem;
+}
 .info {
   margin-top: 12px;
+  width: 21%;
+}
+.intro-for-game {
+  margin-top: 12px;
+  font-size: 24px;
+}
+.intro {
+  font-size: 24px;
 }
 .game-header div, .hud div {
   user-select: none;
@@ -54,8 +74,97 @@ div.projects {
 .stat {
   font-weight: 600;
   font-size: 20px;
+  
 }
 .stat span {
   font-weight: 300;
-
 }
+.mid-ele {
+  margin-top: 70px;
+}
+.last-ele {
+  margin-top: 70px;
+  margin-bottom: 50px;
+}
+
+
+/* Illustrations */
+div.projects.illustrations {
+  padding: 0 10%;
+  margin-top: 15px;
+  display: flex;
+  gap: 200px;
+}
+.wrapper {
+  position: relative;
+  height: 300px;
+  width: 600px;
+  margin: 50px 0;
+  
+  display: flex;
+  flex-direction: row;
+  
+  transition: all 200ms ease-in-out;
+}
+
+.image-wrapper {
+  height: 300px;
+  width: 450px;
+  overflow: hidden;
+  border-radius: 5px;
+  cursor: pointer;
+
+  transition: all 200ms ease-in-out;
+}
+
+.image-wrapper img {
+  height: 300px;
+  width: 450px;
+  object-fit: cover;
+  object-position: top;
+  
+  transition: all 200ms ease-in-out;
+}
+
+.book-design-image {
+  object-position: center;
+}
+
+.header-wrapper {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  height: 300px;
+  width: 300px;
+  left: 380px;
+  transition: all 200ms ease-in-out;
+  overflow: hidden;
+  
+}
+
+h1 {
+  position: relative;
+  bottom: 0;
+  height: 300px;
+  color: #fff;
+  font-size: 80px;
+  font-family: Oswald;
+  text-transform: uppercase;
+  
+  transition: all 200ms ease-in-out;
+}
+
+.wrapper:hover img {
+  transform: scale(2);
+  /*object-position: bottom;*/
+}
+
+.wrapper:hover h1 {
+  bottom: 300px;
+  transform: scale(.4);
+}
+
+.wrapper:hover .image-wrapper {
+  width: 800px;
+}
+

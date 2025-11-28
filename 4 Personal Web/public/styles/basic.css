@@ -3,7 +3,12 @@
   --page-left-padding: 1.5%;
 }
 
-/* !!! Setting For PC Screen*/
+/* !!! Setting For PC Screen
+  refe:
+  If screen is larger than 768px wide - show four images side by side
+  If screen is smaller than 768px - show two images side by side
+  If screens is smaller than 480px - stack the images vertically (width: 100%)
+*/
 @media screen and (width >= 768px) {
   
   .menu > div:nth-child(1) {
@@ -33,7 +38,9 @@
   font-weight: 400;
   font-style: normal;
 }
-
+.hidden {
+  display: none;
+}
 body {
   margin: 0;
 }
@@ -48,11 +55,12 @@ body {
 .menu > div {
   position: relative;
 }
-.page-bg {
+body {
   background-color: black;
+  
 }
 #index-page-bg {
-  overflow: hidden;
+  overflow-x: hidden;
   text-align: center;
   height: 100vh;
 }

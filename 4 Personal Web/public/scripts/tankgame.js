@@ -1,346 +1,603 @@
 (() => {
-  /* --- Helpers --- */
-  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
-  function dist(a, b) { let dx = a.x - b.x, dy = a.y-b.y; return Math.hypot(dx, dy); }
-  function rand(min, max) { return Math.random() * (max - min) + min; }
-  function angleTo(a, b) { return Math.atan2(b.y - a.y, b.x - a.x); }
+  /* Helper functions and consts*/
+  function dist(a, b) { 
+    let dx = a.x - b.x, dy = a.y - b.y; 
+    return Math.hypot(dx, dy); 
+  }
 
-  /* ===== Entities ===== */
-  class Bullet {
-    constructor(x, y, angle, owner) {
-      this.x = x; 
+  const Statuses = {
+    ALIVE: Symbol("ALIVE"),
+    DYING: Symbol("DYING"),
+    DEAD: Symbol("DEAD")
+  };
+  Object.freeze(Statuses);
+
+  /* Prepare entities: tank, bullet */
+  class Tank {
+    constructor(x, y, isPlayer, color = 'lime') {
+      this.x = x;
       this.y = y;
-      const speed = 320;
-      this.vx = Math.cos(angle)*speed;
-      this.vy = Math.sin(angle)*speed;
-      this.radius = 3;
-      this.life = 2.5; // seconds
-      this.owner = owner; // "player" or "enemy"
+      this.color = color;
+      this.WIDTH = 40;
+      this.HEIGHT = 40;
+      this.DISPLAY_CALIBRATION = 0; // To make the collision with canvas look right
+      this.TURRET_WIDTH = 20;
+      this.TURRET_HEIGHT = 20;
+      this.TURRET_COLOR = '#292828ff';
+      this.GUN_WIDTH = 5;
+      this.GUN_HEIGHT = 30;
+      this.GUN_COLOR = '#4c4c4cff';
+
+      this.direction = 0; // 0: up, 1: right, 2: down, 3: left
+      this.TANK_SPEED = 120;
+      this.isPlayer = isPlayer;
+      this.dyingAnimCounter = 0.4; 
+      this.DYING_EXPLOSION_RADIUS = Math.max(this.WIDTH / 2, this.HEIGHT / 2) - 5;
+      this.DYING_EXPLOSION_R_INCREMENT = 0.2;
+      this.reload = 0; // Reload bullets counter
+      this.reloadTime = 0.35;
+      this.ifBulletCoolDown = false;
+      this.status = Statuses.ALIVE;
     }
+
+    //this.collisionDetect(this.direction, enemies, this, panelWidth, panelHeight, dt);
+    collisionDetect(direction, enemies, player, panelWidth, panelHeight, dt) {
+      var newX;
+      var newY;
+      var allOtherTanks = [];
+      if (player.status === Statuses.ALIVE && this.isPlayer === false) {
+        allOtherTanks.push(player);
+      }
+      enemies.forEach(e => {
+        if (e.status === Statuses.ALIVE && e !== this) {
+          allOtherTanks.push(e);
+        }
+      });
+
+      switch (direction) {
+        case 0 :
+          newX = this.x;
+          newY = this.y - this.TANK_SPEED * dt;
+
+          // Check collision with the canvas
+          if (newY < 0) {
+            return false;
+          }
+
+          // Check collision with other tanks
+          for (const t of allOtherTanks) {
+            if ((newX >= t.x && newX <= t.x + t.WIDTH 
+                && newY >= t.y && newY <= t.y + t.HEIGHT)
+                || (newX + this.WIDTH >= t.x && newX + this.WIDTH <= t.x + t.WIDTH 
+                && newY >= t.y && newY <= t.y + t.HEIGHT)) {
+              return false;
+            }
+          }
+          
+          break;
+          
+        case 2 :
+          newX = this.x;
+          newY = this.y + this.TANK_SPEED * dt;
+
+          if (newY + this.HEIGHT > panelHeight) {
+            return false;
+          }
+
+          for (const t of allOtherTanks) {
+            if ((newX + this.WIDTH >= t.x && newX + this.WIDTH <= t.x + t.WIDTH
+                && newY + this.HEIGHT >= t.y && newY + this.HEIGHT <= t.y + t.HEIGHT)
+                || (newX >= t.x && newX <= t.x + t.WIDTH
+                && newY + this.HEIGHT >= t.y && newY + this.HEIGHT <= t.y + t.HEIGHT)) {
+              return false;
+            }
+          }
+
+          break;
+
+        case 1 :
+          newX = this.x + this.TANK_SPEED * dt;
+          newY = this.y;
+
+          if (newX + this.WIDTH + this.DISPLAY_CALIBRATION > panelWidth) {
+            return false;
+          }
+
+          for (const t of allOtherTanks) {
+            if ((newX + this.WIDTH >= t.x && newX + this.WIDTH <= t.x + t.WIDTH
+                && newY >= t.y && newY <= t.y + t.HEIGHT)
+                ||(newX + this.WIDTH >= t.x && newX + this.WIDTH <= t.x + t.WIDTH
+                && newY + this.HEIGHT >= t.y && newY + this.HEIGHT <= t.y + t.HEIGHT)) {
+              return false;
+            }
+          }
+
+          break;
+
+        case 3 :
+          newX = this.x - this.TANK_SPEED * dt;
+          newY = this.y;
+
+          if (newX < 0) {
+            return false;
+          }
+
+          for (const t of allOtherTanks) {
+            if ((newX >= t.x && newX <= t.x + t.WIDTH
+              && newY >= t.y && newY <= t.y + t.HEIGHT)
+              ||(newX >= t.x && newX <= t.x + t.WIDTH
+              && newY + this.HEIGHT >= t.y && newY + this.HEIGHT <= t.y + t.HEIGHT)) {
+              return false;
+            }
+          }
+
+          break;
+      }
+      return true;
+    }
+
+    isShot() {
+      if (this.status === Statuses.ALIVE) {
+        this.status = Statuses.DYING;
+      }
+    }
+
+    draw(ctx) {
+
+      if (this.status === Statuses.DEAD) return;
+      if (this.status === Statuses.DYING) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.DYING_EXPLOSION_RADIUS, 0, Math.PI * 2);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 4;
+        ctx.stroke();
+        ctx.restore();
+
+      } else if (this.status === Statuses.ALIVE) {
+        ctx.save();
+      
+        ctx.translate(this.x, this.y);
+        ctx.fillStyle = this.color;
+      
+        switch (this.direction) {
+          case 0:
+            // body
+            ctx.fillRect(0, 0, this.WIDTH, this.HEIGHT);
+
+            // turret & gun
+            ctx.fillStyle = this.TURRET_COLOR;
+            ctx.fillRect((this.WIDTH - this.TURRET_WIDTH) / 2, (this.HEIGHT - this.TURRET_HEIGHT) / 2, 
+            this.TURRET_WIDTH, this.TURRET_HEIGHT);
+
+            ctx.fillStyle = this.GUN_COLOR;
+            ctx.fillRect((this.WIDTH - this.GUN_WIDTH) / 2, this.HEIGHT / 2 - this.GUN_HEIGHT, this.GUN_WIDTH, this.GUN_HEIGHT);
+            break;
+
+          case 1:
+            ctx.fillRect(0, 0, this.HEIGHT, this.WIDTH);
+
+            ctx.fillStyle = this.TURRET_COLOR;
+            ctx.fillRect((this.HEIGHT - this.TURRET_HEIGHT) / 2, (this.WIDTH - this.TURRET_WIDTH) / 2,
+            this.TURRET_HEIGHT, this.TURRET_WIDTH);
+
+            ctx.fillStyle = this.GUN_COLOR;
+            ctx.fillRect(this.HEIGHT / 2, (this.WIDTH - this.GUN_WIDTH) / 2, this.GUN_HEIGHT, this.GUN_WIDTH);
+            break;
+
+          case 2:
+            ctx.fillRect(0, 0, this.WIDTH, this.HEIGHT);
+
+            ctx.fillStyle = this.TURRET_COLOR;
+            ctx.fillRect((this.WIDTH - this.TURRET_WIDTH) / 2, (this.HEIGHT - this.TURRET_HEIGHT) / 2, 
+            this.TURRET_WIDTH, this.TURRET_HEIGHT);
+
+            ctx.fillStyle = this.GUN_COLOR;
+            ctx.fillRect((this.WIDTH - this.GUN_WIDTH) / 2, this.HEIGHT / 2, this.GUN_WIDTH, this.GUN_HEIGHT);
+            break;
+
+          case 3:
+            ctx.fillRect(0, 0, this.HEIGHT, this.WIDTH);
+
+            ctx.fillStyle = this.TURRET_COLOR;
+            ctx.fillRect((this.HEIGHT - this.TURRET_HEIGHT) / 2, (this.WIDTH - this.TURRET_WIDTH) / 2,
+            this.TURRET_HEIGHT, this.TURRET_WIDTH);
+
+            ctx.fillStyle = this.GUN_COLOR;
+            ctx.fillRect(this.HEIGHT / 2 - this.GUN_HEIGHT, (this.WIDTH - this.GUN_WIDTH) / 2, this.GUN_HEIGHT, this.GUN_WIDTH);
+            break;
+        }
+
+        ctx.restore();   
+      }
+    }
+
+    shoot(dt, bullets) {
+      var newBullet;
+      switch(this.direction) {
+        case 0: 
+          newBullet = new Bullet(this.x + this.WIDTH / 2, this.y + this.HEIGHT / 2 - this.GUN_HEIGHT, 
+            this.direction, this.isPlayer? 'p' : 'e');
+          break;
+        case 1:
+          newBullet = new Bullet(this.x + this.WIDTH / 2 + this.GUN_HEIGHT, this.y + this.HEIGHT / 2, 
+            this.direction, this.isPlayer? 'p' : 'e');
+          break;
+        case 2:
+          newBullet = new Bullet(this.x + this.WIDTH / 2, this.y + this.HEIGHT / 2 + this.GUN_HEIGHT,
+            this.direction, this.isPlayer? 'p' : 'e');
+          break;
+        case 3:
+          newBullet = new Bullet(this.x + this.WIDTH / 2 - this.GUN_HEIGHT, this.y + this.HEIGHT / 2,
+            this.direction, this.isPlayer? 'p' : 'e');
+          break;
+      }
+      
+      bullets.push(newBullet);
+    }
+  }
+
+  class Bullet {
+    constructor (x, y, direction, owner) {
+      this.x = x;
+      this.y = y;
+      this.direction = direction;
+      this.owner = owner; // 'p' or 'e'
+      this.BULLET_SPEED = 320; // bullet speed
+      this.RADIUS = 3;
+      const BULLET_LIFE = 2.5; // seconds
+      this.life = BULLET_LIFE;
+    }
+
     update(dt) { 
-      this.x += this.vx * dt; 
-      this.y += this.vy * dt; 
+      switch (this.direction) {
+        case 0:
+          this.y -= this.BULLET_SPEED * dt;
+          break;
+        case 1:
+          this.x += this.BULLET_SPEED * dt;
+          break;
+        case 2:
+          this.y += this.BULLET_SPEED * dt;
+          break;
+        case 3:
+          this.x -= this.BULLET_SPEED * dt;
+          break;
+      }
       this.life -= dt; 
     }
 
     draw(ctx){
       ctx.beginPath();
-      ctx.fillStyle = (this.owner === 'player') ? '#ffd' : '#f88';
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+      ctx.fillStyle = (this.owner === 'p') ? '#ffd' : '#f88';
+      ctx.arc(this.x, this.y, this.RADIUS, 0, Math.PI * 2);
       ctx.fill();
     }
   }
 
-  class Tank {
-    constructor(x, y, color = 'lime') {
-      this.x = x; 
-      this.y = y;
-      this.direction = 0; // 0: up, 1: right, 2: down, 3: left
-      this.speed = 120;
-      this.dyingCounter = 0;
-      this.reload = 0; // Reload bullets
-      this.reloadTime = 0.35;
-      this.life = 1;
-
-      // For drawing purpose
-      this.w = 28; 
-      this.h = 36;
-      this.color = color;  
-    }
-
-    shoot(bullets) {
-      if (this.reload > 0) return;
-      const muzzleX = this.x + Math.cos(this.angle) * (this.h/2 + 4);
-      const muzzleY = this.y + Math.sin(this.angle) * (this.h/2 + 4);
-      bullets.push(new Bullet(muzzleX, muzzleY, this.angle, this instanceof Enemy ? 'enemy' : 'player'));
-      this.reload = this.reloadTime;
-    }
-    takeDamage(amount){
-      this.hp = Math.max(0, this.hp - amount);
-    }
-    draw(ctx){
-      ctx.save();
-      ctx.translate(this.x, this.y);
-      // body
-      ctx.rotate(this.bodyAngle);
-      ctx.fillStyle = this.color;
-      ctx.fillRect(-this.w/2, -this.h/2, this.w, this.h);
-      // treads
-      ctx.fillStyle = '#222';
-      ctx.fillRect(-this.w/2 - 4, -this.h/2, 4, this.h);
-      ctx.fillRect(this.w/2, -this.h/2, 4, this.h);
-      ctx.restore();
-      // turret
-      ctx.save();
-      ctx.translate(this.x, this.y);
-      // ctx.rotate(this.angle);
-      ctx.fillStyle = '#333';
-      ctx.fillRect(-6, -8, 12, 16); // turret base
-      ctx.fillStyle = '#222';
-      ctx.fillRect(-3, -this.h/2 - 8, 6, this.h/2 + 8); // barrel
-      ctx.restore();
-
-      // hp bar
-      const barW = 40;
-      ctx.fillStyle = '#333';
-      ctx.fillRect(this.x - barW/2, this.y - this.h/2 - 12, barW, 6);
-      const pct = this.hp/this.maxHp;
-      ctx.fillStyle = pct>0.5 ? '#6c6' : (pct>0.2 ? '#eea' : '#f66');
-      ctx.fillRect(this.x - barW/2 + 1, this.y - this.h/2 - 11, (barW-2)*pct, 4);
-    }
-  }
-
   class Player extends Tank {
-    constructor(x,y){
-      super(x,y,'#6cf');
-      this.controls = {up:false,down:false,left:false,right:false,shoot:false};
+    constructor(x, y) { //(x, y, isPlayer, color = 'lime')
+      super(x, y, true);
+      this.controls = {
+        up: false,
+        down: false,
+        left: false,
+        right: false,
+        shoot: false
+      };
     }
-    update(dt, inputAngle){
-      // movement relative to bodyAngle
-      let vx=0, vy=0;
-      if(this.controls.up) vy -= 1;
-      if(this.controls.down) vy += 1;
-      if(this.controls.left) vx -= 1;
-      if(this.controls.right) vx += 1;
-      // normalize
-      if (vx!==0 || vy!==0) {
-        const mag = Math.hypot(vx,vy);
-        vx /= mag; vy /= mag;
-        // move in world coords (we'll move with vx,vy)
-        this.x += vx * this.speed * dt;
-        this.y += vy * this.speed * dt;
-        // body faces movement direction
-        this.bodyAngle = Math.atan2(vy, vx);
+
+    update(dt, bullets, enemies, panelWidth, panelHeight) {
+
+      if (this.status === Statuses.DEAD) {
+        return;
+      } else if (this.status === Statuses.DYING) {
+        if (this.dyingAnimCounter > 0) {
+          this.dyingAnimCounter -= dt;
+          this.DYING_EXPLOSION_RADIUS += this.DYING_EXPLOSION_R_INCREMENT;
+        } else {
+          this.status = Statuses.DEAD;
+        }
+      } else if (this.status === Statuses.ALIVE) {
+        let vx = 0;
+        let vy = 0;
+
+        if(this.controls.up) { 
+          vy = -1;
+          this.direction = 0;
+        } else if(this.controls.down) {
+          vy = 1;
+          this.direction = 2;
+        } else if(this.controls.left) {
+          vx = -1;
+          this.direction = 3;
+        } else if(this.controls.right) {
+          vx = 1;
+          this.direction = 1;
+        }
+
+        // Deal with shoot and reload logic
+        if (this.ifBulletCoolDown === true) {
+          this.reload += dt;
+        }
+
+        if (this.controls.shoot) {
+          if (this.reload === 0) {
+            this.ifBulletCoolDown = true;
+            this.shoot(dt, bullets);
+          } else if (this.reload >= this.reloadTime) {
+            this.reload = 0;
+            this.ifBulletCoolDown = false;
+          }
+        }
+
+        // Do a collision detect and then move
+        const ifNotCollided = this.collisionDetect(this.direction, enemies, this, panelWidth, 
+          panelHeight, dt);
+
+    
+        if (ifNotCollided && (vx !== 0 || vy !== 0)) {
+          this.y += vy * this.TANK_SPEED * dt;
+          this.x += vx * this.TANK_SPEED * dt;
+        }
       }
-      // turret points to mouse / inputAngle (if provided)
-      if (typeof inputAngle === 'number') this.angle = inputAngle;
-      if (this.reload > 0) this.reload -= dt;
+    }
+
+    bulletCoolDownStart(dt) {
+      this.reload += dt;
     }
   }
 
   class Enemy extends Tank {
     constructor(x,y) {
-      super(x,y,'#f96');
+      super(x, y, false, '#f96');
       this.reloadTime = 0.9;
-      this.target = null;
-      this.state = 'idle';
-      this._aiTimer = rand(0.5,2);
+      this.direction = 2;
+    
     }
-    update(dt, player, bullets){
-      // simple chase AI
-      const d = dist(this, player);
-      if (d < 220) {
-        // chase
-        const ang = angleTo(this, player);
-        this.bodyAngle = ang;
-        this.x += Math.cos(ang)*this.speed*0.6*dt;
-        this.y += Math.sin(ang)*this.speed*0.6*dt;
-        // turret face player
-        this.angle = ang;
-        // shoot occasionally when roughly facing
-        if (Math.random() < 0.6*dt && this.reload <= 0 && d < 260) {
-          this.shoot(bullets);
-        }
-      } else {
-        // wander
-        this._aiTimer -= dt;
-        if (this._aiTimer <= 0) {
-          this._aiDir = rand(0,Math.PI*2);
-          this._aiTimer = rand(0.6,1.8);
-        }
-        this.bodyAngle = this._aiDir || 0;
-        this.x += Math.cos(this.bodyAngle)*this.speed*0.25*dt;
-        this.y += Math.sin(this.bodyAngle)*this.speed*0.25*dt;
-        this.angle = this.bodyAngle;
+
+    randomMove(enemies, player, panelWidth, panelHeight, dt) {
+      // 40% of chance, enemy doesn't move at all.
+      if (Math.random() > 0.6 ) return;
+
+      var randomDirection = this.direction;
+      if (Math.random() > 0.95) {
+        randomDirection = Math.floor(Math.random() * 4);
+        this.direction = randomDirection;
       }
-      if (this.reload > 0) this.reload -= dt;
+
+      const ifNotCollided = this.collisionDetect(this.direction, enemies, player, panelWidth, panelHeight, dt)
+      if (ifNotCollided) {
+        switch(this.direction) {
+          case 0: 
+            this.y -= this.TANK_SPEED * dt;
+            break;
+          case 1:
+            this.x += this.TANK_SPEED * dt;
+            break;
+          case 2:
+            this.y += this.TANK_SPEED * dt;
+            break;
+          case 3:
+            this.x -= this.TANK_SPEED * dt;
+            break;
+        }
+      }
+    }
+
+    randomShoot(dt, player, bullets) {
+      // The closer enemy gets to the player, the more fierce it shoots
+      if (dist(player, this) <= 240 && Math.random() > 0.15) {
+        if (this.reload === 0) {
+          this.ifBulletCoolDown = true;
+          this.shoot(dt, bullets);
+        } else if (this.reload >= this.reloadTime) {
+          this.reload = 0;
+          this.ifBulletCoolDown = false;
+        }
+      } else if (Math.random() > 0.4) {
+        if (this.reload === 0) {
+          this.ifBulletCoolDown = true;
+          this.shoot(dt, bullets);
+        } else if (this.reload >= this.reloadTime) {
+          this.reload = 0;
+          this.ifBulletCoolDown = false;
+        }
+      }
+    }
+
+    update(dt, bullets, enemies, player, panelWidth, panelHeight) {
+
+      if (this.status === Statuses.DEAD) {
+        return;
+      } else if (this.status === Statuses.DYING) {
+        if (this.dyingAnimCounter > 0) {
+          this.dyingAnimCounter -= dt;
+          this.DYING_EXPLOSION_RADIUS += this.DYING_EXPLOSION_R_INCREMENT;
+        } else {
+          this.status = Statuses.DEAD;
+        }
+      } else if (this.status === Statuses.ALIVE) {
+        // Deal with move
+        this.randomMove(enemies, player, panelWidth, panelHeight, dt);
+
+        // Deal with shoot and reload logic
+        if (this.ifBulletCoolDown === true) {
+          this.reload += dt;
+        } 
+
+        this.randomShoot(dt, player, bullets);
+      }
     }
   }
 
-  /* ===== Game engine ===== */
   class Game {
     constructor(canvas, ui) {
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
-      this.ui = ui;
       this.width = canvas.width;
       this.height = canvas.height;
+      this.running = false;
+      this.ui = ui;
       this.bullets = [];
       this.enemies = [];
-      this.last = null;
-      this.player = new Player(this.width/2, this.height/2);
-      this.spawnEnemies(3);
-      this.mouse = {x:this.width/2, y:this.height/2, down:false};
-      this.running = false;
-      this._boundLoop = this.loop.bind(this);
-
-      // clamp inside game area
-      this.boundary = {x:0,y:0,w:this.width,h:this.height};
-      this.setupInput();
-    }
-
-    setupInput(){
-      // keys
       this.keys = {};
-      window.addEventListener('keydown', (e)=> {
-        if (e.key === ' '){ e.preventDefault(); this.player.controls.shoot = true; }
-        this.keys[e.key.toLowerCase()] = true;
-        this.updateControls();
-      });
-      window.addEventListener('keyup', (e)=> {
-        if (e.key === ' '){ e.preventDefault(); this.player.controls.shoot = false; }
-        this.keys[e.key.toLowerCase()] = false;
-        this.updateControls();
-      });
-      // mouse
-      this.canvas.addEventListener('mousemove', (e)=> {
-        const rect = this.canvas.getBoundingClientRect();
-        this.mouse.x = e.clientX - rect.left;
-        this.mouse.y = e.clientY - rect.top;
-      });
-      this.canvas.addEventListener('mousedown', (e)=> {
-        if (e.button === 0) this.mouse.down = true;
-      });
-      this.canvas.addEventListener('mouseup', (e)=> {
-        if (e.button === 0) this.mouse.down = false;
-      });
+      this.last = null;
+      this.player = new Player(this.width / 2, this.height * 3 / 4);
+      this.spawnEnemies(3, this.player);
+      this._boundLoop = this.loop.bind(this);
+      this.setupInput();
+      this.winFlag = null;
+      this.loseFlag = null;
     }
 
-    updateControls(){
-      const k = this.keys;
-      this.player.controls.up = k['w'] || k['arrowup'];
-      this.player.controls.down = k['s'] || k['arrowdown'];
-      this.player.controls.left = k['a'] || k['arrowleft'];
-      this.player.controls.right = k['d'] || k['arrowright'];
-      // shoot handled via mouse or space (space sets player.controls.shoot true in keydown)
-    }
-
-    spawnEnemies(n){
-      this.enemies.length = 0;
-      for (let i=0;i<n;i++){
-        const x = rand(40, this.width-40);
-        const y = rand(40, this.height-40);
-        const e = new Enemy(x,y);
-        this.enemies.push(e);
-      }
-    }
-
-    start(){
+    start() {
       if (this.running) return;
       this.running = true;
       this.last = performance.now();
       requestAnimationFrame(this._boundLoop);
     }
 
-    stop(){
-      this.running = false;
+    spawnEnemies(n, player) {
+      function rand(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      let x = 0, y = 0;
+      const maxColumn = this.width / player.WIDTH;
+      const maxColumnSpan = maxColumn / n;
+      const maxRow = (this.height - player.y) / player.HEIGHT;
+      const maxRowSpan = maxRow / n;
+
+      for (let i = 0; i < n; i++) {
+        x += rand(player.WIDTH, maxColumnSpan * this.player.WIDTH - 10);
+        y += rand(player.HEIGHT, maxRowSpan * this.player.HEIGHT - 10);
+        const e = new Enemy(x, y);
+        this.enemies.push(e);
+      }
     }
 
-    loop(ts){
+    setupInput() {
+      window.addEventListener('keydown', (e)=> {
+        this.keys[e.key.toLowerCase()] = true;
+        this.updateControls();
+      });
+      window.addEventListener('keyup', (e)=> {
+        this.keys[e.key.toLowerCase()] = false;
+        this.updateControls();
+      });
+    }
+
+    updateControls() {
+      const k = this.keys;
+      this.player.controls.up = k['w'] || k['arrowup'];
+      this.player.controls.down = k['s'] || k['arrowdown'];
+      this.player.controls.left = k['a'] || k['arrowleft'];
+      this.player.controls.right = k['d'] || k['arrowright'];
+      this.player.controls.shoot = k['j'] || k[' '];
+    }
+
+    loop(timestamp) {
       if (!this.running) return;
-      const dt = Math.min(0.05, (ts - this.last)/1000);
-      this.last = ts;
+      console.log("loop() is called.")
+      const dt = Math.min(0.05, (timestamp - this.last)/1000);
+      this.last = timestamp;
       this.update(dt);
       this.draw();
       requestAnimationFrame(this._boundLoop);
     }
 
-    update(dt){
-      // player aim
-      const aimAngle = Math.atan2(this.mouse.y - this.player.y, this.mouse.x - this.player.x);
+    stop() {
+      this.running = false;
+    }
+
+    update(dt) { 
       // update player
-      this.player.update(dt, aimAngle);
-      // shooting
-      if (this.mouse.down || this.player.controls.shoot) {
-        if (this.player.reload <= 0) {
-          this.player.shoot(this.bullets);
-        }
+      if (this.player.status !== Statuses.DEAD) {
+        this.player.update(dt, this.bullets, this.enemies, this.width, this.height);
+      } else {
+        this.loseFlag = true;
       }
 
       // update bullets
-      for (let i=this.bullets.length-1;i>=0;i--){
+      for (let i = this.bullets.length - 1; i >= 0; i--){
         const b = this.bullets[i];
         b.update(dt);
         // remove if out of bounds or expired
-        if (b.life <= 0 || b.x < -20 || b.x > this.width+20 || b.y < -20 || b.y > this.height+20){
-          this.bullets.splice(i,1);
+        if (b.life <= 0 || b.x < -20 || b.x > this.width + 20 || b.y < -20 || b.y > this.height + 20) {
+          this.bullets.splice(i, 1);
           continue;
         }
       }
 
       // update enemies
-      for (let i=this.enemies.length-1;i>=0;i--){
-        const e = this.enemies[i];
-        e.update(dt, this.player, this.bullets);
-        // clamp position
-        e.x = clamp(e.x, 16, this.width-16);
-        e.y = clamp(e.y, 16, this.height-16);
-        if (e.hp <= 0){
-          this.enemies.splice(i,1);
+      if (this.enemies.length !== 0) {
+        for (let i = this.enemies.length - 1; i >= 0; i--){
+          const e = this.enemies[i];
+          if (e.status !== Statuses.DEAD) {
+            // update(dt, bullets, enemies, player, panelWidth, panelHeight)
+            e.update(dt, this.bullets, this.enemies, this.player, this.width, this.height);
+          } else {
+            this.enemies.splice(i, 1);
+            continue;
+          }
         }
+      } else {
+        this.winFlag = true;
       }
+      
 
       // bullet collisions
-      for (let i=this.bullets.length-1;i>=0;i--){
+      for (let i = this.bullets.length - 1; i >= 0; i--){
         const b = this.bullets[i];
-        if (b.owner === 'player'){
+        if (b.owner === 'p'){
           // check enemies
-          for (let j=this.enemies.length-1;j>=0;j--){
+          for (let j = this.enemies.length - 1; j >= 0; j--){
             const e = this.enemies[j];
-            if (Math.hypot(b.x-e.x, b.y-e.y) < e.h/2 + b.radius){
-              e.takeDamage(35);
-              this.bullets.splice(i,1); break;
+            if (b.y > e.y && b.y < e.y + e.HEIGHT && b.x > e.x && b.x < e.x + e.WIDTH) {
+              e.isShot();
+              this.bullets.splice(i, 1);
             }
           }
         } else {
           // enemy bullet -> player
-          if (Math.hypot(b.x - this.player.x, b.y - this.player.y) < this.player.h/2 + b.radius){
-            this.player.takeDamage(18);
-            this.bullets.splice(i,1);
+          const p = this.player;
+          if (b.y > p.y && b.y < p.y + p.HEIGHT && b.x > p.x && b.x < p.x + p.WIDTH){
+            p.isShot();
+            this.bullets.splice(i, 1);
           }
         }
       }
 
-      // simple enemy collision push (prevents stacking)
-      for (let i=0;i<this.enemies.length;i++){
-        for (let j=i+1;j<this.enemies.length;j++){
-          const a = this.enemies[i], b = this.enemies[j];
-          const d = Math.hypot(a.x-b.x, a.y-b.y);
-          const min = 28;
-          if (d < min && d>0){
-            const overlap = (min - d) * 0.5;
-            const nx = (a.x - b.x)/d, ny = (a.y - b.y)/d;
-            a.x += nx * overlap;
-            a.y += ny * overlap;
-            b.x -= nx * overlap;
-            b.y -= ny * overlap;
-          }
-        }
-      }
-
-      // clamp player
-      this.player.x = clamp(this.player.x, 16, this.width-16);
-      this.player.y = clamp(this.player.y, 16, this.height-16);
-
-      // update UI
-      this.ui.playerHp.textContent = Math.round(this.player.hp);
+      // update UI ui.playerLife.innerHTML
+      this.ui.playerLife.textContent = this.player.status === Statuses.ALIVE ? 1 : 0;
       this.ui.enemiesCount.textContent = this.enemies.length;
-      this.ui.bulletsCount.textContent = this.bullets.length;
+
     }
 
-    draw(){
+    draw() {
       const ctx = this.ctx;
-      ctx.clearRect(0,0,this.width,this.height);
-      // background grid
+      // Reset the canvas evert time draw() is called.
+      ctx.clearRect(0, 0, this.width, this.height);
+
+      // draw background grid
       ctx.fillStyle = '#07070a';
-      ctx.fillRect(0,0,this.width,this.height);
+      ctx.fillRect(0, 0, this.width, this.height);
       ctx.strokeStyle = '#0f0f14';
       ctx.lineWidth = 1;
-      for (let gx = 0; gx < this.width; gx += 40){
-        ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,this.height); ctx.stroke();
+      for (let gx = 0; gx < this.width; gx += Tank.WIDTH){
+        ctx.beginPath(); 
+        ctx.moveTo(gx,0); 
+        ctx.lineTo(gx,this.height); 
+        ctx.stroke();
       }
-      for (let gy = 0; gy < this.height; gy += 40){
-        ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(this.width,gy); ctx.stroke();
+      for (let gy = 0; gy < this.height; gy += Tank.HEIGHT){
+        ctx.beginPath();
+        ctx.moveTo(0,gy); 
+        ctx.lineTo(this.width,gy); 
+        ctx.stroke();
       }
 
       // draw bullets under tanks
@@ -350,53 +607,62 @@
       for (const e of this.enemies) e.draw(ctx);
 
       // draw player last
-      this.player.draw(ctx);
+      if (this.player.status !== Statuses.DEAD) {
+        this.player.draw(ctx);
+      }
 
-      // optional: draw debug mouse aim
-      ctx.beginPath();
-      ctx.fillStyle = 'rgba(255,255,255,0.06)';
-      ctx.arc(this.mouse.x, this.mouse.y, 6, 0, Math.PI*2); ctx.fill();
+      // Check the game's status (win / lose)
+      if (this.winFlag === true) {
+        ctx.font = `40px "Nunito", sans-serif`;
+        ctx.fillStyle = "#f0e8ebff";
+        ctx.fillText("You won! Have some champagne.", 50, 240);
+      }
+
+      if (this.loseFlag === true) {
+        ctx.font = `bold 35px "Nunito", sans-serif`;
+        ctx.fillStyle = "#aa1b1bff";
+        ctx.fillText("You lose. Click button to try again.", 80, 240);
+      } 
     }
-  } // end Game
+  }
 
-  /* ===== UI wiring ===== */
-  const openBtn = document.getElementById('openBtn');
-  const gameWindow = document.getElementById('gameWindow');
-  const closeBtn = document.getElementById('closeBtn');
-  const restartBtn = document.getElementById('restartBtn');
-  const canvas = document.getElementById('gameCanvas');
+  /* main() */
+  let game = null;
+  const startBtn = $("#tankgame-start-btn");
+  const restartBtn = $("#tankgame-restart-btn")
+  const closeBtn = $("#tankgame-close-btn");
+  const canvas = $("#tank-canvas").get(0);
   const ui = {
-    playerHp: document.getElementById('playerHp'),
-    enemiesCount: document.getElementById('enemiesCount'),
-    bulletsCount: document.getElementById('bulletsCount')
+    playerLife: $("#playerLife").get(0),
+    enemiesCount: $("#enemiesCount").get(0)
   };
 
-  let game = null;
-
-  function openWindow(){
-    gameWindow.style.display = 'block';
-    gameWindow.setAttribute('aria-hidden','false');
-    // create game instance (fresh)
+  startBtn.on("click", function() {
     game = new Game(canvas, ui);
     game.start();
-  }
-  function closeWindow(){
-    if (game) game.stop();
-    gameWindow.style.display = 'none';
-    gameWindow.setAttribute('aria-hidden','true');
-  }
-  function restartGame(){
-    if (game) { game.stop(); }
-    // re-create game fresh
+    startBtn.addClass("hidden");
+    restartBtn.removeClass("hidden");
+  })
+
+  restartBtn.on("click", function() {
+    if (!game) return;
+    game.stop();
     game = new Game(canvas, ui);
     game.start();
-  }
+  })
 
-  openBtn.addEventListener('click', openWindow);
-  closeBtn.addEventListener('click', closeWindow);
-  restartBtn.addEventListener('click', restartGame);
+  closeBtn.on("click", function() {
+    if (game) { 
+      game.stop();
+      restartBtn.addClass("hidden");
+      startBtn.removeClass("hidden");
 
-  // Allow spacebar shooting while focused on page
-  window.addEventListener('keydown', (e)=> { if (e.key === ' '){ e.preventDefault(); } });
+      hint1.fillStyle = "rgb(240, 240, 240)";
+    hint1.fillRect(0, 0, canvas.width, canvas.height);
+    hint1.font = `bold 50px "Nunito", sans-serif`;
+    hint1.fillStyle = "#ff3f95";
+    hint1.fillText("Press start to play", 140, 260);
+    }
+  })
 
 })();
