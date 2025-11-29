@@ -4,7 +4,7 @@
 }
 
 /* !!! Setting For PC Screen
-  refe:
+  Division refe:
   If screen is larger than 768px wide - show four images side by side
   If screen is smaller than 768px - show two images side by side
   If screens is smaller than 480px - stack the images vertically (width: 100%)
@@ -187,7 +187,7 @@ body {
 }
 
 .footer {
-  border-top: 1px solid white;
+  border-top: solid 1.5px rgb(84, 83, 83);
   color: white;
   background-color: black;
   padding: 10px 0 10px var(--page-left-padding);

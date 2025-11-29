@@ -1,3 +1,6 @@
+:root {
+  --illu-info-font-size: 24px;
+}
 /* Coding */
 div.projects.coding {
   padding-left: 23%; 
@@ -91,9 +94,10 @@ div.projects.coding {
 /* Illustrations */
 div.projects.illustrations {
   padding: 0 10%;
-  margin-top: 15px;
-  display: flex;
-  gap: 200px;
+  margin-top: 5px;
+  display: grid;
+  Grid-template-columns: 1fr 1fr;
+  column-gap: 200px;
 }
 .wrapper {
   position: relative;
@@ -106,7 +110,6 @@ div.projects.illustrations {
   
   transition: all 200ms ease-in-out;
 }
-
 .image-wrapper {
   height: 300px;
   width: 450px;
@@ -116,7 +119,6 @@ div.projects.illustrations {
 
   transition: all 200ms ease-in-out;
 }
-
 .image-wrapper img {
   height: 300px;
   width: 450px;
@@ -125,11 +127,15 @@ div.projects.illustrations {
   
   transition: all 200ms ease-in-out;
 }
-
+#sketches {
+  object-position: center;
+}
+.see-project-hint {
+  color: #ff3f95;
+}
 .book-design-image {
   object-position: center;
 }
-
 .header-wrapper {
   display: flex;
   flex-direction: column;
@@ -139,32 +145,84 @@ div.projects.illustrations {
   left: 380px;
   transition: all 200ms ease-in-out;
   overflow: hidden;
-  
 }
-
 h1 {
   position: relative;
   bottom: 0;
   height: 300px;
   color: #fff;
-  font-size: 80px;
-  font-family: Oswald;
+  font-size: 60px; /* original: 80px*/
+  font-family: "Bowlby One SC", sans-serif;
   text-transform: uppercase;
-  
+  user-select: none;
   transition: all 200ms ease-in-out;
 }
-
 .wrapper:hover img {
   transform: scale(2);
   /*object-position: bottom;*/
 }
-
 .wrapper:hover h1 {
   bottom: 300px;
   transform: scale(.4);
 }
-
 .wrapper:hover .image-wrapper {
   width: 800px;
 }
-
+/* Individual illustration project*/
+.in-project {
+  margin-left: 3%;
+}
+.in-project-body {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin: 40px 0;
+  padding: 0 15%;
+}
+.in-project-body h2 {
+  font-size: 50px;
+  font-weight: 700;
+  margin: 0;
+}
+.in-project-body p {
+  margin: 0;
+  font-size: var(--illu-info-font-size);
+  align-self: flex-end;
+}
+.in-project *:not(h2, p) {
+  color: #ff3f95;
+}
+.project-pics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: space-between;
+  margin: 60px 0 5px 0;
+}
+.project-pics.long-pics {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  margin: 60px 0 5px 0;
+  
+}
+.project-pics.long-pics img {
+  width: 800px;
+  height: auto;
+}
+.last-image-n-info {
+  display: inline-block;
+}
+.image-info {
+  text-align: right;
+  margin-top: 0.5rem;
+}
+.project-pics img {
+  width: 550px;
+  height: auto;
+}
+.project-pics-info {
+  align-self: flex-end;
+  display: block;
+}

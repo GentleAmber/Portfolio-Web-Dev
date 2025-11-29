@@ -14,7 +14,6 @@
   <link rel="stylesheet" href="./../styles/works.css">
    
   <script src="./../scripts/jquery-3.7.1.min.js"></script>
-  <script src="./../scripts/tankgame.js"></script>
 </head>
 <body>
   <div class="page-bg" id="works-page-bg">
@@ -35,27 +34,61 @@
 
       <div class="wrapper">
         <div class="image-wrapper">
+          <a href="./illustrations/project1.html">
           <img src="./../images/illu-project1-1.jpg"/>
+          </a>
           <!-- <div class="folded-image">
             <img src="./../images/illu-project1-2.jpg"/>
             <img src="./../images/illu-project1-3.jpg"/>
           </div> -->
         </div>
         <div class="header-wrapper">
-          <h1>In The Silence</h1>
-          <h1>See Project</h1>
+          <h1>Illustr-<br />aions</h1>
+          <h1 class="see-project-hint">See Project</h1>
         </div>
       </div>
 
       <div class="wrapper">
         <div class="image-wrapper">
-          <img class="book-design-image" src="https://images.unsplash.com/photo-1561214115-f2f134cc4912?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1306&q=80" />
+          <img class="book-design-image" src="./../images/illu-project2-4.jpg" />
         </div>
         <div class="header-wrapper">
-          <h1>Book Design</h1>
-          <h1>See Project</h1>
+          <h1>Comic Design</h1>
+          <h1 class="see-project-hint">See Project</h1>
         </div>
       </div>
+
+      <div class="wrapper">
+        <div class="image-wrapper">
+          <img class="book-design-image" src="./../images/illu-project5-1.jpg" />
+        </div>
+        <div class="header-wrapper">
+          <h1>Comic Design</h1>
+          <h1 class="see-project-hint">See Project</h1>
+        </div>
+      </div>
+
+      <div class="wrapper">
+        <div class="image-wrapper">
+          <img class="book-design-image" src="./../images/illu-project4-1.jpg" 
+          id="sketches"/>
+        </div>
+        <div class="header-wrapper">
+          <h1>Sketch-<br /> es</h1>
+          <h1 class="see-project-hint">See Project</h1>
+        </div>
+      </div>
+
+      <!-- <div class="wrapper">
+        <div class="image-wrapper">
+          <img class="book-design-image" src="./../images/illu-project3-1.jpg" 
+          id="xx-birthday"/>
+        </div>
+        <div class="header-wrapper">
+          <h1>Anime Fanart</h1>
+          <h1 class="see-project-hint">See Project</h1>
+        </div>
+      </div> -->
 
     </div>
     <footer>
@@ -73,9 +106,8 @@
 
     $(".navbar-items-col a").each(function () {
       const id = $(this).attr("id");
-
       if (current.indexOf(id) > -1) {
-        $(this).css("text-decoration", "underline");
+        $(this).addClass("nav-item-highlight");
         $(this).on("click", function(e) {
           e.preventDefault();
         })

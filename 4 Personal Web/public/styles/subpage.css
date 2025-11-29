@@ -39,22 +39,25 @@
 }
 .btn-group button.btn-highlight {
   background-color: white;
-  color: black;
+  color: #ff3f95;
   font-weight: 700;
 }
 .btn-group button.default-btn:hover {
-  background-color: rgb(221, 221, 221);
-  color: black;
+  background-color: rgb(227, 226, 226);
+  color: #ff3f95;
 }
 .navbar {
   padding: 20px 0 15px 0;
   display: flex;
   justify-content: space-between;
-  background-color: rgba(142, 138, 138, 0.702);
+  /* background: linear-gradient(to bottom, rgb(41, 40, 40), 80%, black); */
+  background-color: black;
+  /* background-color: rgb(41, 40, 40); */
+  border-bottom: solid 1.5px rgb(84, 83, 83);
   /* background-color: rgba(166, 164, 161, 0.702); */
 }
 .navbar a {
-  color: black;
+  color: #ff3f95;
 }
 .navbar-name {
   font-family: "Bowlby One SC", sans-serif;
@@ -79,17 +82,16 @@ a {
 }
 @keyframes navItemColorChange {
   to {
-    color: #ff3f95;
+    color: #ffffff;
   }
 }
 .nav-item-highlight {
   text-decoration: underline;
   pointer-events: none;
   cursor: default;
+  color: white !important;
 }
-.footer > p {
-  user-select: none;
-}
+
 /* For special features*/
 .carousel.works {
   margin-top: 12px;

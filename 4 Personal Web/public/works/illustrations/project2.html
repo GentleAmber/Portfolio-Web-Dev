@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amber Wang</title>
+  <link rel="icon" href="./../images/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./../../styles/basic.css">
+  <link rel="stylesheet" href="./../../styles/subpage.css">
+  <link rel="stylesheet" href="./../../styles/works.css">
+   
+  <script src="./../../scripts/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+  <div class="page-bg" id="works-page-bg">
+    <div class="navbar">
+      <a href="./../index.html" class="navbar-name">Amber Wang</a>
+      <div class="navbar-items-col">
+        <a href="./../aboutme.html" id="aboutme">About Me</a>
+        <a href="./coding.html" id="works">Works</a>
+        <a href="./../interests.html" id="interests">Interests</a>
+        <a href="./../contact.html" id="contact">Contact</a>
+      </div>
+    </div>
+
+    <div class="in-project">
+      <a href="./../illustrations.html" style="font-size: 25px;">
+        <img src="./../../images/return-button.svg" width="20" />
+        Return
+      </a>
+
+      <div class="in-project-body">
+        <h2>Seasons Of Glass And Iron</h2>
+        <div class="project-pics">
+          <img src="./../../images/illu-project2-1.jpg">
+          <img src="./../../images/illu-project2-2.jpg">
+          <img src="./../../images/illu-project2-3.jpg">
+          <img src="./../../images/illu-project2-4.jpg">
+          <img src="./../../images/illu-project2-5.jpg">
+          <img src="./../../images/illu-project2-6.jpg">
+        </div>
+        <div class="project-pics-info"><p>Digital drawing, 2022</p></div>
+        
+        
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer">
+        <p>© Amber Wang, 2025-2025</p>
+      </div>
+    </footer>
+  </div>
+</body>
+<script>
+  $(document).ready(function () {
+    // Underline the current page on navbar & disable it
+    const current = window.location.pathname;
+
+    $(".navbar-items-col a").each(function () {
+      const id = $(this).attr("id");
+      if (current.indexOf(id) > -1) {
+        $(this).addClass("nav-item-highlight");
+        $(this).on("click", function(e) {
+          e.preventDefault();
+        })
+      }
+    });
+  });
+</script>
+</html>
