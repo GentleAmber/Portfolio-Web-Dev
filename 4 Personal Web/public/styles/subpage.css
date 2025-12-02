@@ -90,6 +90,11 @@ a {
   pointer-events: none;
   cursor: default;
   color: white !important;
+  font-weight: 700 !important;
+  
+}
+.nav-item-highlight a {
+  
 }
 
 /* For special features*/
