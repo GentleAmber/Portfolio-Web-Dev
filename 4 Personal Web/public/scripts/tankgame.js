@@ -657,11 +657,14 @@
       restartBtn.addClass("hidden");
       startBtn.removeClass("hidden");
 
+      const hint1 = canvas.getContext("2d");
+      hint1.clearRect(0, 0, canvas.width, canvas.height);
+      
       hint1.fillStyle = "rgb(240, 240, 240)";
-    hint1.fillRect(0, 0, canvas.width, canvas.height);
-    hint1.font = `bold 50px "Nunito", sans-serif`;
-    hint1.fillStyle = "#ff3f95";
-    hint1.fillText("Press start to play", 140, 260);
+      hint1.fillRect(0, 0, canvas.width, canvas.height);
+      hint1.font = `bold 50px "Nunito", sans-serif`;
+      hint1.fillStyle = "#ff3f95";
+      hint1.fillText("Press start to play", 140, 260);
     }
   })
 

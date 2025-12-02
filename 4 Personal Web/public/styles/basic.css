@@ -199,4 +199,5 @@ body {
   font-weight: 250; /* <weight>: Use a value from 200 to 1000 */
   font-style: normal;
   font-size: 15px;
+  user-select: none;
 }

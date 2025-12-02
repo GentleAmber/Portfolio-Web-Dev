@@ -92,6 +92,7 @@ div.projects.coding {
 
 
 /* Illustrations */
+
 div.projects.illustrations {
   padding: 0 10%;
   margin-top: 5px;
@@ -131,7 +132,7 @@ div.projects.illustrations {
   object-position: center;
 }
 .see-project-hint {
-  color: #ff3f95;
+  color: #ff3f95 !important;
 }
 .book-design-image {
   object-position: center;
@@ -146,7 +147,7 @@ div.projects.illustrations {
   transition: all 200ms ease-in-out;
   overflow: hidden;
 }
-h1 {
+.header-wrapper h1 {
   position: relative;
   bottom: 0;
   height: 300px;
@@ -187,7 +188,7 @@ h1 {
 .in-project-body p {
   margin: 0;
   font-size: var(--illu-info-font-size);
-  align-self: flex-end;
+  align-self: center;
 }
 .in-project *:not(h2, p) {
   color: #ff3f95;
@@ -196,33 +197,66 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 40px;
-  justify-content: space-between;
-  margin: 60px 0 5px 0;
+  justify-content: center;
+  margin: 50px 0 5px 0;
 }
-.project-pics.long-pics {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 40px;
-  margin: 60px 0 5px 0;
+.project-pics.various-sizes {
+  display: grid;
+  width: 80%;
+  gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: masonry;
+}
+.project-pics.various-sizes img{
+  width: 300px;
+  height: auto;
   
+}
+.project-pics.tall-pics {
+  justify-content: space-evenly;
 }
 .project-pics.long-pics img {
   width: 800px;
   height: auto;
 }
-.last-image-n-info {
-  display: inline-block;
-}
-.image-info {
-  text-align: right;
-  margin-top: 0.5rem;
+.project-pics.tall-pics img {
+  width: 300px;
+  height: auto;
 }
 .project-pics img {
   width: 550px;
   height: auto;
 }
-.project-pics-info {
-  align-self: flex-end;
-  display: block;
+.maso-flow > * + * {
+  margin-block-start: var(--flow-space, 1em);
 }
+.maso-flow {
+  margin: 0 10px;
+}
+.maso-wrapper {
+  max-width: 110rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  margin-top: 50px;
+}
+.masonry {
+  --gutter: 0.25em;
+  --flow-space: var(--gutter);
+  --switcher-target-container-width: 25rem;
+}
+.masonry img {
+  width: 100%;
+}
+.maso-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gutter, 1em);
+  align-items: var(--switcher-vertical-alignment, flex-start);
+}
+.maso-switcher > * {
+  flex-grow: 1;
+  flex-basis: calc(
+    (var(--switcher-target-container-width, 40rem) - 100%) * 999
+  );
+}
+
