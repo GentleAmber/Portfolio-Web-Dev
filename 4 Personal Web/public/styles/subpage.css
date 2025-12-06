@@ -1,8 +1,5 @@
-* {
-  font-family: "Nunito", sans-serif;
-  font-optical-sizing: auto;
-  font-style: normal;
-  color: white;
+:root {
+  --intro-font-size: 24px;
 }
 .page-bg {
   font-weight: 600; /* <weight>: Use a value from 200 to 1000 */
@@ -12,6 +9,24 @@
   row-gap: 30px;
   width: 100%;
   height: auto;
+}
+#about-me-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#about-me-content h1,h2 {
+  user-select: none;
+  margin: 10px 0;
+}
+#about-me-content h1 {
+  font-size: 50px;
+}
+.page-bg * {
+  font-family: "Nunito", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  color: white;
 }
 
 .btn-group { 
@@ -93,9 +108,6 @@ a {
   font-weight: 700 !important;
   
 }
-.nav-item-highlight a {
-  
-}
 
 /* For special features*/
 .carousel.works {
@@ -138,4 +150,81 @@ button.next { right: 10px; }
 
 .zoom-in {
   cursor: zoom-in;
+}
+
+/* Interest page */
+.interests-list {
+  margin: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.interest {
+  padding: 2% 1.5%;
+  width: 90%;
+  display: flex;
+  gap: 50px;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 24px;
+}
+.interest img {
+  border-radius: 0.5rem;
+}
+#interest-game {
+  height: 400px;
+}
+#interest-game img{
+  width: 15%;
+}
+.interest p{
+  margin: 0;
+}
+span.text-highlight {
+  color: #ff3f95;
+  font-weight: 700;
+}
+.interests-list h2 {
+  display: block;
+  font-weight: 700;
+  color: #ff3f95;
+  margin: 2% 0 0 0;
+}
+#about-me-profile {
+  margin-top: 5%;
+  margin-bottom: 2%;
+  width: 15%;
+  border-radius: 0.5rem;
+  align-self: center;
+  
+}
+.link {
+  color: rgb(96, 159, 231); text-decoration: underline;
+}
+.row-showcase {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 120px 30px 10px;
+  width: 85%;
+  gap: 15px;
+  justify-content: space-between;
+
+}
+.showcase-title {
+  color: #ff3f95;
+  border-left: 10px solid #ff3f95;
+  padding-left: 10px;
+}
+.showcase-ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+.showcase-p {
+  margin: 0;
+  font-size: 24px;
+}
+#about-me-intro {
+  padding-bottom: 50px;
+  border-bottom: 2px solid #5e5e5e;
 }

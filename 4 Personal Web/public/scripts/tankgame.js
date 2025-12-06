@@ -481,12 +481,18 @@
 
     setupInput() {
       window.addEventListener('keydown', (e)=> {
-        this.keys[e.key.toLowerCase()] = true;
-        this.updateControls();
+        if (this.running) {
+          e.preventDefault();
+          this.keys[e.key.toLowerCase()] = true;
+          this.updateControls();
+        }
       });
       window.addEventListener('keyup', (e)=> {
-        this.keys[e.key.toLowerCase()] = false;
-        this.updateControls();
+        if (this.running) {
+          e.preventDefault();
+          this.keys[e.key.toLowerCase()] = false;
+          this.updateControls();
+        }
       });
     }
 
@@ -501,7 +507,6 @@
 
     loop(timestamp) {
       if (!this.running) return;
-      console.log("loop() is called.")
       const dt = Math.min(0.05, (timestamp - this.last)/1000);
       this.last = timestamp;
       this.update(dt);
@@ -641,7 +646,9 @@
     game = new Game(canvas, ui);
     game.start();
     startBtn.addClass("hidden");
+    console.log(" startBtn.addClass(hidden); executed.");
     restartBtn.removeClass("hidden");
+    console.log(" restartBtn.removeClass(hidden); executed.");
   })
 
   restartBtn.on("click", function() {
@@ -652,6 +659,22 @@
   })
 
   closeBtn.on("click", function() {
+    closeGame();
+  });
+
+  $("#illustrations").on("click", function() {
+    closeGame();
+  });
+
+  // $(document).on("click", function(e) {
+  //   if (!game) return;
+  //   const invalidTargets = [$("#tank-canvas"), restartBtn, startBtn, closeBtn];
+  //   if (!invalidTargets.includes(e.target)) {
+  //     game.gameLoseFocus();
+  //   }
+  // })
+
+  function closeGame() {
     if (game) { 
       game.stop();
       restartBtn.addClass("hidden");
@@ -666,6 +689,6 @@
       hint1.fillStyle = "#ff3f95";
       hint1.fillText("Press start to play", 140, 260);
     }
-  })
+  }
 
 })();

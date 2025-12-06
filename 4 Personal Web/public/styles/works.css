@@ -9,7 +9,6 @@ div.projects.coding {
   padding-left: 23%; 
   margin-top: 15px;
 }
-
 .helper {
   font-size: 18px;
   margin: 0;
@@ -24,15 +23,14 @@ div.projects.coding {
 }
 .game-canvas {
   border: 1px solid #ffffff;
-  border-radius: 15px;
+  border-radius: 0.5rem;
   margin-top: 12px;
   overflow: hidden;
   height: auto;
   width: 700px;
-  /* -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC); */
 }
 .carousel.works {
-  border-radius: 15px;
+  border-radius: 0.5rem;
 }
 .opeBtn {
   background-color: black;
@@ -52,7 +50,7 @@ div.projects.coding {
 }
 .hud {
   margin-top: 15px;
-  border: 1px solid rgb(52, 52, 52);
+  border: 2px solid rgb(52, 52, 52);
   padding: 5px 30px 80px 10px;
   border-radius: 0.5rem;
 }
@@ -118,7 +116,7 @@ div.projects.illustrations {
   height: 300px;
   width: 450px;
   overflow: hidden;
-  border-radius: 5px;
+  border-radius: 0.5rem;
   cursor: pointer;
 
   transition: all 200ms ease-in-out;
@@ -183,6 +181,9 @@ div.projects.illustrations {
   margin: 40px 0;
   padding: 0 15%;
 }
+#home-deco-body {
+  padding: 0 5%;
+}
 .in-project-body h2 {
   font-size: 50px;
   font-weight: 700;
@@ -202,6 +203,16 @@ div.projects.illustrations {
   gap: 40px;
   justify-content: center;
   margin: 50px 0 5px 0;
+}
+.stickers.project-pics {
+  width: 100%;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+.stickers.project-pics img {
+  width: 110%;
 }
 .project-pics.various-sizes {
   display: grid;
@@ -261,5 +272,23 @@ div.projects.illustrations {
   flex-basis: calc(
     (var(--switcher-target-container-width, 40rem) - 100%) * 999
   );
+}
+#home-deco {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 30px;
+}
+#home-deco > img {
+  width: 200px;
+}
+#home-deco > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 60px;
+}
+#home-deco > div > img {
+  width: 1000px;
 }
 

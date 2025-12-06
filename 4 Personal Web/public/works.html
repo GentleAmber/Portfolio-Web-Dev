@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amber Wang</title>
+  <link rel="icon" href="./images/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./styles/basic.css">
+  <link rel="stylesheet" href="./styles/subpage.css">
+  <link rel="stylesheet" href="./styles/works.css">
+
+  <script src="./scripts/jquery-3.7.1.min.js"></script>
+  
+</head>
+<body>
+  <div class="page-bg" id="works-page-bg">
+    <div class="navbar">
+      <a href="./index.html" class="navbar-name">Amber Wang</a>
+      <div class="navbar-items-col">
+        <a href="./aboutme.html" id="aboutme">About Me</a>
+        <a href="./working.html" id="works">Works</a>
+        <a href="./interests.html" id="interests">Interests</a>
+        <!-- <a href="#">简体中文</a> -->
+      </div>
+    </div>
+    <div class="btn-group"> 
+      <button type="button" class="nav-button default-btn" id="coding">Coding</button> 
+      <button type="button" class="nav-button default-btn" id="illustrations">Illustrations</button> 
+    </div>
+    <div class="projects coding section">
+      <div class="game-window" id="tank-game-window">
+        <div class="game-body" id="tank-game-body">
+          <div class="game-header">
+            <div class="game-title">
+              <a href="https://github.com/GentleAmber/Amber-Portfolio-Java/tree/main/1%20Tank%20Game"
+                target="_blank">
+                <img src="./images/link-button.svg" alt="link icon" height="20" />
+                Tank Game
+              </a>
+            </div>
+            <div class="helper">
+              Controls: WASD / Arrow keys to move, J to shoot
+            </div>
+          </div>
+          <div class="screen-and-info">
+            <canvas class="game-canvas" id="tank-canvas" width="700" height="500">
+            </canvas>
+            <div class="info">
+              <div class="game-control-btn">
+                <button class="opeBtn" id="tankgame-start-btn">Start</button>
+                <button class="opeBtn hidden" id="tankgame-restart-btn">Restart</button>
+                <button class="opeBtn" id="tankgame-close-btn">Close</button>
+              </div>
+              <div class="hud">
+                <div class="stat">Player life: <span id="playerLife">1</span></div>
+                <div class="stat">Enemies Alive: <span id="enemiesCount">3</span></div>
+                <!-- <div class="stat">Bullets: <span id="bulletsCount">0</span></div> -->
+              </div>
+              <div class="intro-for-game">
+                This project was initially programmed in Java. It was converted to Javascript so that it can be
+                experienced on the browser.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-window mid-ele" id="blog-app-window">
+        <div class="game-body">
+          <div class="game-header">
+            <div class="game-title">
+              <a href="https://github.com/GentleAmber/Amber-Portfolio-Java/tree/main/2%20Instant%20Message%20System"
+                target="_blank">
+                <img src="./images/link-button.svg" alt="link icon" height="20" />
+                Instant Message System
+              </a>
+            </div>
+            <div class="helper">
+              A system that enables real-life communication between client and server components.
+            </div>
+          </div>
+          <div class="screen-and-info">
+            <a href="./images/instant-message-system.png" target="_blank" class="zoom-in">
+              <img class="game-canvas" id="blog-app-img" 
+              src="./images/instant-message-system.png" alt="Display of client's interface"
+              width="700" />
+            </a>
+            <div class="info">
+              <div class="intro">
+                This is a messaging system allowing multiple clients to exchange and broadcast messages, as well as send files.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-window mid-ele" id="blog-app-window">
+        <div class="game-body">
+          <div class="game-header">
+            <div class="game-title">
+              <a href="https://github.com/GentleAmber/Amber-Portfolio-Web-Dev/tree/main/1%20Blog%20Application"
+                target="_blank">
+                <img src="./images/link-button.svg" alt="link icon" height="20" />
+                Blog App
+              </a>
+            </div>
+            <div class="helper">
+              A blog app where the user can create, edit and delete posts (data not stored)
+            </div>
+          </div>
+          <div class="screen-and-info">
+            <a href="./images/blog-app-thumbnail.png" target="_blank" class="zoom-in">
+              <img class="game-canvas" id="blog-app-img" 
+              src="./images/blog-app-thumbnail.png" alt="A screenshot of the blog app's home page"
+              width="700" />
+            </a>
+            <div class="info">
+              <div class="intro">
+                A CRUD project without database. 
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-window mid-ele" id="public-api-window">
+        <div class="game-body">
+          <div class="game-header">
+            <div class="game-title">
+              <a href="https://github.com/GentleAmber/Amber-Portfolio-Web-Dev/tree/main/2%20Use%20Public%20API"
+                target="_blank">
+                <img src="./images/link-button.svg" alt="link icon" height="20" />
+                Home Of Art (API) 
+              </a>
+            </div>
+            <div class="helper">
+              A site featuring random artwork display and search
+            </div>
+          </div>
+          <div class="screen-and-info">
+            <div class="carousel works">
+              <div class="carousel-track">
+                <a href="./images/public-api-thumbnail-index.png" target="_blank" class="zoom-in">
+                  <img src="./images/public-api-thumbnail-index.png" alt="Homepage with a random artwork"/>
+                </a>
+                <a href="./images/public-api-thumbnail-search.png" target="_blank" class="zoom-in">
+                  <img src="./images/public-api-thumbnail-search.png" alt="Search page with the results of Van Goah's works"/>
+                </a>
+              </div>
+
+              <button class="prev">‹</button>
+              <button class="next">›</button>
+            </div>
+            <div class="info">
+              <div class="intro" style="font-size: 21px;">
+                This website has a home page where a random piece of art is displayed, and a search page where users can search for artworks.
+                <br>
+                API used: <a target="_blank" href="https://metmuseum.github.io/" class="link">The Metropolitan Museum of Art Collection API</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-window last-ele" id="book-note-window">
+        <div class="game-body">
+          <div class="game-header">
+            <div class="game-title">
+              <a href="https://github.com/GentleAmber/Amber-Portfolio-Web-Dev/tree/main/3%20Book%20Notes"
+                target="_blank" name="book-note">
+                <img src="./images/link-button.svg" alt="link icon" height="20" />
+                Book Note (Database + API)
+              </a>
+            </div>
+            <div class="helper">
+              A site where users can log in to their own accounts & keep track of their book notes
+            </div>
+          </div>
+          <div class="screen-and-info">
+            <div class="carousel works">
+              <div class="carousel-track">
+                <a href="./images/book-note-index.png" target="_blank" class="zoom-in">
+                  <img src="./images/book-note-index.png" alt="Homepage with 3 book notes"/>
+                </a>
+                <a href="./images/book-note-addbook.png" target="_blank" class="zoom-in">
+                  <img src="./images/book-note-addbook.png" alt="The page to add book note"/>
+                </a>
+                <a href="./images/book-note-signup.png" target="_blank" class="zoom-in">
+                  <img src="./images/book-note-signup.png" alt="The page to sign up as new user"/>
+                </a>
+              </div>
+
+              <button class="prev">‹</button>
+              <button class="next">›</button>
+            </div>
+            <div class="info">
+              <div class="intro" style="font-size: 21px;">
+                This website uses PostgreSQL to save user data, and 
+                <a target="_blank" href="https://openlibrary.org/dev/docs/api/covers" class="link">Open Library Covers API</a>
+                 to fetch covers for the books whose serial numbers are provided. 
+                <br>
+                Users can write notes, give ratings, etc.
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="projects illustrations section hide">
+      <!-- Stickers -->
+       <div class="wrapper">
+        <div class="image-wrapper">
+          <a class="to-illu-project" data-linkto="illu-project6">
+            <img src="./images/stickers/banner-1.png" alt="A bunch of cute jellycats"/>
+          </a>
+        </div>
+        <div class="header-wrapper">
+          <h1 style="font-size: 55px">Chat Stickers</h1>
+          <h1 class="see-project-hint">See Project</h1>
+        </div>
+      </div>
+
+      <!-- Home deco -->
+      <div class="wrapper">
+        <div class="image-wrapper">
+          <a class="to-illu-project" data-linkto="illu-project5">
+            <img src="./images/illu-project6-0.jpg" alt="Painting of lake and mountains"/>
+          </a>
+        </div>
+        <div class="header-wrapper">
+          <h1>Home Deco</h1>
+          <h1 class="see-project-hint">See Project</h1>
+        </div>
+      </div>
+
+      <!-- Chased -->
+      <div class="wrapper">
+        <div class="image-wrapper">
+          <a class="to-illu-project" data-linkto="illu-project1">
+            <img src="./images/illu-project5-1.jpg" alt="A physical deer chasing a spiritual deer"/>
+          </a>
+        </div>
+        <div class="header-wrapper">
+          <h1>Comic Design</h1>
+          <h1 class="see-project-hint">See Project</h1>
+        </div>
+      </div>
+
+      <!-- In The Silence -->
+      <div class="wrapper">
+        <div class="image-wrapper">
+          <a class="to-illu-project" data-linkto="illu-project2">
+            <img src="./images/illu-project1-1.jpg" alt="Two figures wearing gold whispering, map pieces of countries in their plate, people working hard in the background" />
+          </a>
+        </div>
+        <div class="header-wrapper">
+          <h1>Illustr-<br />aions</h1>
+          <h1 class="see-project-hint">See Project</h1>
+        </div>
+      </div>
+
+      <div class="wrapper">
+        <div class="image-wrapper">
+          <a class="to-illu-project" data-linkto="illu-project3">
+            <img src="./images/illu-project2-4.jpg" alt="A rabbit doll holding a girl's face" />
+          </a>
+        </div>
+        <div class="header-wrapper">
+          <h1>Comic Design</h1>
+          <h1 class="see-project-hint">See Project</h1>
+        </div>
+      </div>
+
+      <div class="wrapper">
+        <div class="image-wrapper">
+          <a class="to-illu-project" data-linkto="illu-project4">
+            <img id="sketches" src="./images/illu-project4-1.jpg" alt="Two hands holding tight together"/>
+          </a>
+        </div>
+        <div class="header-wrapper">
+          <h1>Other Works</h1>
+          <h1 class="see-project-hint">See Project</h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="in-project section hide" id="illu-project1">
+      <a class="return-link" style="font-size: 25px;" href="#">
+        <img src="./images/return-button.svg" width="20" />
+        Return
+      </a>
+      <div class="in-project-body">
+        <h2>Chased</h2>
+        <p class="image-info">Digital drawing, 2023</p>
+        <div class="project-pics tall-pics">
+          <img src="./images/illu-project5-2.jpg">
+          <img src="./images/illu-project5-3.jpg">
+          <img src="./images/illu-project5-4.jpg">
+          <img src="./images/illu-project5-5.jpg">
+          <img src="./images/illu-project5-6.jpg">
+          <img src="./images/illu-project5-7.jpg">
+        </div>
+      </div>
+    </div>
+
+    <div class="in-project section hide" id="illu-project2" >
+      <a class="return-link" style="font-size: 25px;" href="#">
+        <img src="./images/return-button.svg" width="20" />
+        Return
+      </a>
+      <div class="in-project-body">
+        <h2>In The Silence</h2>
+        <p class="image-info">Digital drawing, 2022</p>
+        <div class="project-pics">
+          <img src="./images/illu-project1-4.jpg">
+          <img src="./images/illu-project1-2.jpg">
+          <img src="./images/illu-project1-3.jpg">
+          <img src="./images/illu-project1-1.jpg">
+        </div>
+      </div>
+    </div>
+
+    <div class="in-project section hide" id="illu-project3" >
+      <a class="return-link" style="font-size: 25px;" href="#">
+        <img src="./images/return-button.svg" width="20" />
+        Return
+      </a>
+      <div class="in-project-body">
+        <h2>Seasons Of Glass And Iron</h2>
+        <p class="image-info">Gouache, Mixed materials, 2022</p>
+        <div class="project-pics long-pics">
+          <img src="./images/illu-project2-1.jpg">
+          <img src="./images/illu-project2-2.jpg">
+          <img src="./images/illu-project2-3.jpg">
+          <img src="./images/illu-project2-4.jpg">
+          <img src="./images/illu-project2-5.jpg">
+          <img src="./images/illu-project2-6.jpg">
+        </div>
+      </div>
+    </div>
+
+    <div class="in-project section hide" id="illu-project4" >
+      <a class="return-link" style="font-size: 25px;" href="#">
+        <img src="./images/return-button.svg" width="20" />
+        Return
+      </a>
+
+      <div class="in-project-body">
+        <h2>A Mix Of Various Works</h2>
+        <p class="image-info">Mainly digital drawing including life drawing, fanarts, etc. 2020 - 2024</p>
+        <div class="maso-wrapper maso-switcher masonry">
+          <div class="maso-flow">
+            <img src="./images/illu-project4-1.jpg" />
+            <img src="./images/illu-project4-5.jpg" />
+            <img src="./images/illu-project4-6.jpg" />
+            <img src="./images/illu-project4-9.jpg" />
+          </div>
+
+          <div class="maso-flow">
+            <img src="./images/illu-project4-3.jpg" />
+            <img src="./images/illu-project4-4.jpg" />
+            <img src="./images/illu-project4-11.jpg" />
+            <img src="./images/illu-project4-12.jpg" />
+          </div>
+
+          <div class="maso-flow">
+            <img src="./images/illu-project4-7.jpg" />
+            <img src="./images/illu-project4-8.bmp" />
+            <img src="./images/illu-project4-2.jpg" />
+            <img src="./images/illu-project4-10.jpg" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Home deco -->
+     <div class="in-project section hide" id="illu-project5" >
+      <a class="return-link" style="font-size: 25px;" href="#">
+        <img src="./images/return-button.svg" width="20" />
+        Return
+      </a>
+
+      <div class="in-project-body" id="home-deco-body">
+        <h2>Scenic Couplet</h2>
+        <p class="image-info">Digital drawing, 2023</p>
+        <div class="project-pics" id="home-deco">
+          <img src="./images/illu-project6-4.jpg">
+          <div>
+            <img src="./images/illu-project6-2.jpg">
+            <img src="./images/illu-project6-3.jpg">
+          </div>
+          <img src="./images/illu-project6-1.jpg">
+        </div>
+      </div>
+    </div>
+
+    <!-- Stickers -->
+    <div class="in-project section hide" id="illu-project6" >
+      <a class="return-link" style="font-size: 25px;" href="#">
+        <img src="./images/return-button.svg" width="20" />
+        Return
+      </a>
+      <div class="in-project-body">
+        <h2>Dober Island</h2>
+        <p class="image-info">Digital drawing, 2025</p>
+        <div class="project-pics stickers">
+          <img src="./images/stickers/1- (1).png">
+          <img src="./images/stickers/1- (2).png">
+          <img src="./images/stickers/1- (4).png">
+          <img src="./images/stickers/1- (5).png">
+          <img src="./images/stickers/1- (7).png">
+          <img src="./images/stickers/1- (3).png">
+          <img src="./images/stickers/1- (6).png">
+          <img src="./images/stickers/1- (8).png">
+          <img src="./images/stickers/2- (1).png">
+          <img src="./images/stickers/2- (2).png">
+          <img src="./images/stickers/2- (3).png">
+          <img src="./images/stickers/2- (4).png">
+          <img src="./images/stickers/2- (5).png">
+          <img src="./images/stickers/2- (6).png">
+          <img src="./images/stickers/2- (7).png">
+          <img src="./images/stickers/2- (8).png">
+          <img src="./images/stickers/3- (1).png">
+          <img src="./images/stickers/3- (2).png">
+          <img src="./images/stickers/3- (3).png">
+          <img src="./images/stickers/3- (4).png">
+          <img src="./images/stickers/3- (5).png">
+          <img src="./images/stickers/3- (6).png">
+          <img src="./images/stickers/3- (7).png">
+          <img src="./images/stickers/3- (8).png">
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer">
+        <p>© Amber Wang, 2025-2025</p>
+      </div>
+    </footer>
+  </div>
+</body>
+<script>
+  $(document).ready(function () {
+
+    // Underline the current page on navbar & disable it
+    const current = window.location.pathname;
+    var workType = "coding";
+
+    $(".navbar-items-col a").each(function () {
+      const id = $(this).attr("id");
+      if (current.indexOf(id) > -1) {
+        $(this).addClass("nav-item-highlight");
+        $(this).on("click", function(e) {
+          e.preventDefault();
+        })
+      }
+    });
+
+    // Highlight the current nav button (coding/illustrations)
+    navButtonHighlight();
+    function navButtonHighlight() {
+      $(".nav-button").each(function() {
+        const id = $(this).attr("id");
+        if (workType.indexOf(id) > -1) {
+          $(this).addClass("btn-highlight");
+          $(this).removeClass("default-btn");
+        } else {
+          $(this).removeClass("btn-highlight");
+          $(this).addClass("default-btn");
+        }
+      })
+    }
+
+    // After clicking the illustration button, show the content
+    $("#illustrations").on("click", function() {
+      if (workType === "illustrations") return;
+      workType = "illustrations";
+      $(".section.coding").addClass("hide");
+      $(".section.illustrations").removeClass("hide");
+      navButtonHighlight();
+    })
+    // vice versa
+    $("#coding").on("click", function() {
+      if (workType === "coding") return;
+      workType = "coding";
+      $(".section.illustrations").addClass("hide");
+      $(".section.coding").removeClass("hide");
+      navButtonHighlight();
+    })
+    // Show individual illustration projects
+    $(".to-illu-project").on("click", function() {
+      $(".btn-group").addClass("hide");
+      var linktoid = $(this).data('linkto');
+      $(".section.illustrations").addClass("hide");
+      $("#" + linktoid).removeClass("hide");
+      window.scrollTo(0, 0);
+    })
+    // Return to illustration page from individual projects
+    $(".return-link").on("click", function() {
+      $(".btn-group").removeClass("hide");
+      $(".section.illustrations").removeClass("hide");
+      $(".in-project.section").addClass("hide");
+    })
+
+    // Show initial hints on canvases
+    const canvas = $("#tank-canvas").get(0);
+    const hint1 = canvas.getContext("2d");
+    hint1.fillStyle = "rgb(240, 240, 240)";
+    hint1.fillRect(0, 0, canvas.width, canvas.height);
+    hint1.font = `bold 50px "Nunito", sans-serif`;
+    hint1.fillStyle = "#ff3f95";
+    hint1.fillText("Press start to play", 140, 260);
+
+    // Carousel effect. Width: 700px
+    $(".carousel").each(function () {
+      const carousel = $(this);
+      const track = carousel.find(".carousel-track");
+      const images = track.find("img");
+      let index = 0;
+
+      carousel.find(".next").on("click", () => {
+        index = (index + 1) % images.length;
+        track.css("transform", `translateX(-${index * 700}px)`);
+      });
+
+      carousel.find(".prev").on("click", () => {
+        index = (index - 1 + images.length) % images.length;
+        track.css("transform", `translateX(-${index * 700}px)`);
+      });
+    });
+  });
+</script>
+<script src="./scripts/tankgame.js"></script>
+</html>

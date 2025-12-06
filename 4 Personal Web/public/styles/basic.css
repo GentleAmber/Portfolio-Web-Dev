@@ -57,12 +57,14 @@ body {
 }
 body {
   background-color: black;
-  
+}
+#index-body {
+  overflow: hidden;
 }
 #index-page-bg {
-  overflow-x: hidden;
   text-align: center;
   height: 100vh;
+  padding-top: 50px;
 }
 #welcome {
   margin: 0;
@@ -95,8 +97,6 @@ body {
   position: absolute;
   z-index: 0;
 }
-
-
 
 .menu > div:nth-child(1) {
   left: 80%;

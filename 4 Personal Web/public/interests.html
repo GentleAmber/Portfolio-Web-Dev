@@ -13,14 +13,7 @@
   <link rel="stylesheet" href="./styles/subpage.css">
 
   <script src="./scripts/jquery-3.7.1.min.js"></script>
-  <style>
-    .interests-list {
-      margin: 0 20px;
-    }
-    .interest {
-      padding: 0 1.5%;
-    }
-  </style>
+
 </head>
 <body>
   <div class="page-bg">
@@ -28,15 +21,79 @@
       <a href="./index.html" class="navbar-name">Amber Wang</a>
       <div class="navbar-items-col">
         <a href="./aboutme.html" id="aboutme">About Me</a>
-        <a href="./works/coding.html" id="works">Works</a>
+        <a href="./works.html" id="works">Works</a>
         <a href="./interests.html" id="interests">Interests</a>
-        <a href="./contact.html" id="contact">Contact</a>
+        <!-- <a href="#">简体中文</a> -->
       </div>
     </div>
 
     <div class="interests-list">
-      <div class="interest">test1</div>
-      <div class="interest">test2</div>
+      <h2>Serious Stuff</h2>
+      <div class="interest">
+        <img src="./images/interest-turing1.png" height="380" alt="Screenshot of a cpu built in the game Turing Complete">
+        <p>
+          I enjoy studying about computer. For example, 
+          I have been curious about <span class="text-highlight">how computer works</span>
+           since I worked at a game company.
+          And this game called Turing Complete really helped me understand. I have learnt 
+          how single electronic components form into complex ones, how machine codes take effect, and how 
+          to programme with assembly language to achieve small functions in this game. It 
+          was a wonderful journey.
+        </p>
+      </div>
+      
+      <div class="interest">
+        <p>
+          After getting to know about SQL injection while learning database on the Java course, I have also been interested 
+          in the <span class="text-highlight"> cyber security field.</span> Hacking is the art of rule manipulation.
+          I plan to explore this field in the future after building a firm foundation of the basic concepts.
+          <br />
+          <br />
+          In my work <a href="./works.html#book-note" target="_blank" class="link">Book Notes</a>, to identify users, instead of using mature package,
+          I practiced generating temporary, random tokens and sending them through cookies to better grasp the security-related knowledge.
+        </p>
+        <img src="./images/interest-sql.png" style="height: 200px;"/>
+      </div>
+
+      <div class="interest">
+        <p>
+          Though being a necessity instead of interest to many people in the world, I like <span class="text-highlight">learning English</span> as well. With my mother being
+          an earnest English teacher, I started learning English at an early age and have always been 
+          excited to explore more. Having got a 7.5 in IELTS exam in 2020, I have been keeping enlarging my vocabulary
+          size as well as listening to and speaking more.
+        </p>
+        <!-- <div style="width: 1300px;"></div> -->
+      </div>
+
+      <h2>Games</h2>
+      <div class="interest" id="interest-game">
+        <p>
+          I have played lots of games. My personal top 3 are: 
+          <br />
+          <span class="text-highlight">- Disco Elysium</span><br />
+          <span class="text-highlight">- Metal Gear Solid V: The Phantom Pain</span><br />
+          <span class="text-highlight">- Divinity: Original Sin 2</span><br />
+          <br />
+          Basically, I love games either with good narratives or where I can explore freely and mess around. DE is the representative of 
+          100/100 narrative in my opinion, DOS2 has 100/100 gameplay, and MGSV has a perfect mix of the two aspects.
+        </p>
+          <img src="./images/interest-DE.jpg" alt="Poster of Disco Elysium"/>
+          <img src="./images/interest-MGSV.jpg" alt="Poster of Metal Gear Solid V"/>
+          <img src="./images/interest-DOS2.jpg" alt="Poster of Divinity: Original Sin 2"/>
+      </div>
+
+      <h2>Exercises</h2>
+      <div class="interest">
+        <p>
+          I used to work out a lot and can still do a few push-ups at once. Earlier this year
+          I did <span class="text-highlight">bouldering</span> once a week with my group. However,
+          due to my wrong posture or my either-sedentary-or-exercising-intensely lifestyle, I developed neck and 
+          shoulders pain, so I switched to doing <span class="text-highlight">Pilates</span> later on. 
+          So far the pain has been long gone, and I am eager to explore other interesting exercises as well.
+        </p>
+      </div>
+      
+
     </div>
   </div>
 </body>
