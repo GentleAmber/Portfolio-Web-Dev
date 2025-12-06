@@ -17,3 +17,5 @@ This website uses PostgreSQL to save user data, [Open Library Covers API](https:
 <br>
 Compared with setting up the PostgreSQL database and running this project yourself, watching the demo video is recommended.
 
+## 4 Personal Website
+I plan to deploy it on GitHub Pages. The link will be updated here once that is done.
